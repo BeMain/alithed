@@ -1,8 +1,10 @@
+import math
+import time
+
 import pyglet
 from pyglet.window import key
-import math
 
-from game import constants
+from game import constants, wraps
 from game.terrain import chunk, data_handler
 
 
@@ -68,6 +70,7 @@ class Terrain():
             old_keys = self.chunks.keys() if self.chunks else []
             new_keys = []
 
+
             # Generate chunks
             for z in range(player_z+1, player_z-2, -1):
                 for x in range(chunk_min_x, chunk_max_x):
@@ -93,6 +96,7 @@ class Terrain():
                     pass
                 del self.chunks[key]
     
+
     def __init__(self, *args, **kwargs):
         if not Terrain.instance:
             Terrain.instance = Terrain.__Terrain(*args, **kwargs)

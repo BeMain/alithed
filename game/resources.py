@@ -1,7 +1,9 @@
+import os
+
 import pyglet
 from pyglet import gl
 
-from game import constants
+from game import constants, items
 
 
 pyglet.resource.path = ["resources"]
@@ -21,8 +23,13 @@ def get_background_scale_factor(background):
     # Used to scale background to fill screen
     scale_x = constants.SCREEN_WIDTH / background.width
     scale_y = constants.SCREEN_HEIGHT / background.height
-
     return max(scale_x, scale_y)
+
+def get_tile_image(path):
+    img = pyglet.resource.image(path)
+    img.width = img.height = constants.TILE_SIZE
+    center_image(img)
+    return img
 
 
 player_image = pyglet.resource.image("player.png")
@@ -30,11 +37,16 @@ player_image.width /= 10
 player_image.height /= 10
 center_image(player_image)
 
-tile_image = pyglet.resource.image("tiles/stone.png")
-tile_image.width = tile_image.height = constants.TILE_SIZE
-center_image(tile_image)
+
+# Load tile textures
+tiles = {}
+for tile in items.items:
+    path = f"tiles/{tile}.png"
+    if os.path.exists("resources/"+path):
+        tiles[items.items[tile]["texture_id"]] = get_tile_image(path)
 
 
+# Load background image
 background_image = pyglet.resource.image("backgrounds/space.png")
 scale_factor = get_background_scale_factor(background_image)
 background_image.width *= scale_factor

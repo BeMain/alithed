@@ -1,7 +1,7 @@
 import glooey
 
 from game import constants
-from game.gui import menus, pause
+from game.gui import menus, pause, inventory
 
 
 class GuiHandler(glooey.Gui):
@@ -9,15 +9,26 @@ class GuiHandler(glooey.Gui):
         super(GuiHandler, self).__init__(*args, **kwargs)
         
         self.menus = []
+        self.inventory = inventory.Inventory(self)
+        
 
     def close_menus(self):
         pause.paused = False
         self.clear()
         self.menus = []
+    
+    def _open_menu(self, menu):
+        pause.paused = True
+        self.inventory.close()
+        self.clear()
+
+        self.add(menu)
+        self.menus.append(menu)
+
 
     def open_main_menu(self):
         menu = menus.MainMenu()
-        self.menus.append(menu)
+        self._open_menu(menu)
         
         @menu.event
         def on_button_click(action):
@@ -31,13 +42,10 @@ class GuiHandler(glooey.Gui):
             else: 
                 print("Unknown action:", action)
 
-        self.clear()
-        self.add(menu)
-
-        pause.paused = True
     
     def open_settings(self):
         menu = menus.Settings()
+        self._open_menu(menu)
 
         @menu.event
         def on_setting_changed(setting):
@@ -53,7 +61,3 @@ class GuiHandler(glooey.Gui):
             if action == "Done":
                 self.close_menus()
 
-        self.clear()
-        self.add(menu)
-
-        

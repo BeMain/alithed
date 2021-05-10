@@ -7,11 +7,12 @@ class Tile(pyglet.sprite.Sprite):
     GROUPS = {}
 
     def __init__(self, *args, **kwargs):
-        super(Tile, self).__init__(img=resources.tile_image, usage="static", *args, **kwargs)
+        super(Tile, self).__init__(img=resources.tiles[0], usage="static", *args, **kwargs)
 
         self.register_event_type("on_update")
 
-        self.material = 0
+        self.value = 0
+        self.material = "air"
 
         self.tile_x = 0
         self.tile_y = 0
@@ -36,7 +37,7 @@ class Tile(pyglet.sprite.Sprite):
             self.batch = None
 
         else:
-            if self.material == 0:
+            if self.material == "air":
                 # Air shouldn't be rendered
                 self.batch = None
             else:
@@ -52,7 +53,7 @@ class Tile(pyglet.sprite.Sprite):
 
     def set_material(self, material):
         self.material = material
-        if material == 0:
+        if material == "air":
             self.batch = None
         else:
             self.batch = self.BATCH
@@ -64,6 +65,7 @@ class Tile(pyglet.sprite.Sprite):
         return {
             "tile_x": self.tile_x,
             "tile_y": self.tile_y,
+            "value": self.value,
             "material": self.material,
         }
 
@@ -74,8 +76,9 @@ class Tile(pyglet.sprite.Sprite):
         t.tile_x = data["tile_x"]
         t.tile_y = data["tile_y"]
 
-        color = data["material"] * 255
+        color = data["value"] * 255
         t.color = (color, color, color)
+        t.value = data["value"]
         
         t.material = data["material"]
 

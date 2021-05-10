@@ -13,7 +13,8 @@ SEED = 1111
 # File structure
 CHUNKS_PATH = "save/chunks/"
 PLAYER_DATA_PATH = "save/player.json"
+ITEMS_PATH = "save/items.json"
 
 
 # Debugging constants
-DEBUG_CLEAR_WORLD_ON_STARTUP = False
+DEBUG_CLEAR_WORLD_ON_STARTUP = True

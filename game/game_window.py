@@ -87,6 +87,9 @@ class GameWindow(pyglet.window.Window):
                 self.gui.close_menus()
             else:
                 self.gui.open_main_menu()
+        
+        elif symbol == key.I:
+            self.gui.inventory.toggle()
 
     @pause.pausable
     def on_mouse_press(self, x, y, button, modifiers):
@@ -97,10 +100,10 @@ class GameWindow(pyglet.window.Window):
         world_y = self.player.world_y - constants.SCREEN_HEIGHT / 2 + y
         
         tile = self.terrain.get_tile(world_x, world_y, self.player.world_z)
-        if tile.material == 0:
-            tile.set_material(1)
+        if tile.material == "air":
+            tile.set_material("stone")
         else:
-            tile.set_material(0)
+            tile.set_material("air")
 
     def run(self):
         # Initialization

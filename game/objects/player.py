@@ -91,8 +91,8 @@ class Player(pyglet.sprite.Sprite):
         tile = self.terrain.get_tile(self.world_x + dpos.x * (speed + self.width / 2), self.world_y + dpos.y * (speed + self.height / 2), self.world_z)
         tile_b = self.terrain.get_tile(self.world_x + dpos.x * (speed + self.width / 2), self.world_y + dpos.y * (speed + self.height / 2), self.world_z - 1)
 
-        if tile.material == 0:
-            if tile_b.material != 0:
+        if tile.material == "air":
+            if tile_b.material != "air":
                 # Normal movement
                 self.world_x += dpos.x * speed
                 self.world_y += dpos.y * speed
@@ -100,7 +100,7 @@ class Player(pyglet.sprite.Sprite):
             else:
                 # Test if we can move DOWN to the next tile
                 tile_2b = self.terrain.get_tile(self.world_x + dpos.x * (speed + self.width / 2), self.world_y + dpos.y * (speed + self.height / 2), self.world_z - 2)
-                if tile_2b.material != 0:
+                if tile_2b.material != "air":
                     # Move down onto the next tile
                     self.world_x += dpos.x * speed
                     self.world_y += dpos.y * speed
@@ -112,7 +112,7 @@ class Player(pyglet.sprite.Sprite):
         else:
             # Test if we can move UP to the next tile
             tile_a = self.terrain.get_tile(self.world_x + dpos.x * (speed + self.width / 2), self.world_y + dpos.y * (speed + self.height / 2), self.world_z + 1)
-            if tile_a.material == 0:
+            if tile_a.material == "air":
                 # Move up onto the next tile
                 self.world_x += dpos.x * speed
                 self.world_y += dpos.y * speed
