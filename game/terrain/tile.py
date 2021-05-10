@@ -26,7 +26,6 @@ class Tile(pyglet.sprite.Sprite):
             1 : pyglet.graphics.OrderedGroup(2, parent=group),
         }
 
-
     def set_pos(self, x, y, z):
         new_x = x + self.tile_x * self.width
         new_y = y + self.tile_y * self.height

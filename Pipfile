@@ -7,6 +7,7 @@ name = "pypi"
 pyglet = "*"
 glooey = "*"
 perlin-noise = "*"
+numpy = "*"
 
 [dev-packages]
 

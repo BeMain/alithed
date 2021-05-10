@@ -110,6 +110,8 @@ class GameWindow(pyglet.window.Window):
         cursor = self.get_system_mouse_cursor(self.CURSOR_CROSSHAIR)
         self.set_mouse_cursor(cursor)
 
+
+    
         # Update terrain
         self.terrain.update(self.player.world_x, self.player.world_y, self.player.world_z)
 
@@ -121,6 +123,9 @@ class GameWindow(pyglet.window.Window):
                 self.update(time.time() - self.last_scheduled_update)
                 self.last_scheduled_update = time.time()
                 self.render()
+
+                self.terrain.load_chunks_around(self.player.world_x, self.player.world_y, self.player.world_z)
+
 
             event = self.dispatch_events()
             if event: print("Event:", event)

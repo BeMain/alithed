@@ -23,6 +23,7 @@ class Chunk(pyglet.event.EventDispatcher):
     def on_tile_update(self, tile_x, tile_y):
         self.dispatch_event("on_update", self.chunk_x, self.chunk_y, self.chunk_z, tile_x, tile_y)
 
+
     def set_pos(self, x, y, z):
         if z < 0:
             c_above = terrain.Terrain().chunks[(self.chunk_x, self.chunk_y, self.chunk_z + 1)]
