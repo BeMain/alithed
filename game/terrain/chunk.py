@@ -2,7 +2,7 @@ import concurrent.futures
 
 import pyglet
 
-from game import wraps
+from game import debug
 from game.terrain import data_handler, terrain_generation, terrain, tile
 
 
@@ -51,10 +51,13 @@ class Chunk(pyglet.event.EventDispatcher):
         return list(map(lambda col: list(map(lambda tile: tile.to_data(), col)), self.tiles))
 
     def delete(self):
-        for col in self.tiles:
-            for tile in col:
-                if tile:
-                    tile.delete()
+        try:
+            for col in self.tiles:
+                for tile in col:
+                    if tile:
+                        tile.delete()
+        except:
+            debug.log("Error deleting chunk")
 
     def save(self):
         with concurrent.futures.ThreadPoolExecutor() as executor:

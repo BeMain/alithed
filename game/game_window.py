@@ -6,7 +6,7 @@ import glooey
 import time
 import math
 
-from game import constants, resources, util
+from game import constants, resources, util, debug
 from game.objects import player
 from game.terrain import terrain, tile, data_handler
 from game.gui import pause
@@ -126,7 +126,7 @@ class GameWindow(pyglet.window.Window):
 
 
             event = self.dispatch_events()
-            if event: print("Event:", event)
+            if event: debug.log("Event:", event)
 
         
     def exit(self):

@@ -6,7 +6,7 @@ import itertools
 import pyglet
 from pyglet.window import key
 
-from game import constants, wraps, util
+from game import constants, debug, util
 from game.terrain import chunk, data_handler
 
 
@@ -38,7 +38,7 @@ class Terrain():
 
                 chunk.set_pos(screenx, screeny, z)
 
-        @wraps.timeit
+        @debug.timeit
         def load_chunks_on_screen(self, playerx, playery, playerz):
             w = constants.SCREEN_WIDTH // 2
             h = constants.SCREEN_HEIGHT // 2
@@ -60,13 +60,13 @@ class Terrain():
             # Load new chunks
             for chunkx, chunky, chunkz in new_keys:
                 if (chunkx, chunky, chunkz) not in self.chunks.keys():
-                    print(f"loading {(chunkx, chunky, chunkz)}")
+                    debug.log(f"loading {(chunkx, chunky, chunkz)}")
                     self.load_chunk(chunkx, chunky, chunkz)
 
             # Unload old chunks
             to_remove = list(set(old_keys) - set(new_keys))
             for key in to_remove:
-                print(f"unloading {(key[0], key[1], key[2])}")
+                debug.log(f"unloading {(key[0], key[1], key[2])}")
                 self.unload_chunk(key)
                             
                         
@@ -77,10 +77,7 @@ class Terrain():
 
         def unload_chunk(self, key):
             self.chunks[key].save()
-            try:
-                self.chunks[key].delete()
-            except:
-                pass
+            self.chunks[key].delete()
             del self.chunks[key]
 
         def get_chunkpos_at(self, worldx, worldy):
