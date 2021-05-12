@@ -6,7 +6,7 @@ import itertools
 import pyglet
 from pyglet.window import key
 
-from game import constants, wraps
+from game import constants, wraps, util
 from game.terrain import chunk, data_handler
 
 
@@ -21,56 +21,65 @@ class Terrain():
 
             self.register_event_type("on_update")
             
-            self.loaded_chunks = {}
+            self.corner_chunks = []
             self.chunks = {}
 
         def update(self, player_x, player_y, player_z):
-            self.update_chunks_on_screen(player_x, player_y, player_z)
+            self.load_chunks_on_screen(player_x, player_y, player_z)
+            self.set_pos(player_x, player_y, player_z)
 
         def set_pos(self, x, y, z):
-            for chunk in self.chunks:
-                chunk.set_pos(x, y, z)
+            for chunk in self.chunks.values():
+                worldx = chunk.chunk_x * constants.CHUNK_SIZE * constants.TILE_SIZE
+                worldy = chunk.chunk_y * constants.CHUNK_SIZE * constants.TILE_SIZE
 
-        def load_chunks_around(self, x, y, z):
+                screenx, screeny = util.to_screenpos((worldx, worldy), (x, y))
+
+                chunk.set_pos(screenx, screeny, z)
+
+        def load_chunks_on_screen(self, playerx, playery, playerz):
             w = constants.SCREEN_WIDTH // 2
             h = constants.SCREEN_HEIGHT // 2
 
-            corners = []
             # Get chunk positions for lower left and upper right corner corners
+            corners = []
             for pair in [(-1, -1), (1, 1)]:
-                corners.append(self.get_chunkpos_at(pair[0] * w + x, pair[1] * h + y))
+                corners.append(self.get_chunkpos_at(pair[0] * w + playerx, pair[1] * h + playery))
+            self.corner_chunks = corners
 
-            old_keys = self.loaded_chunks.keys() if self.loaded_chunks else []
+            old_keys = self.chunks.keys() if self.chunks else []
+            # Get positions for chunks on screen
             new_keys = []
-            for tx in range(corners[0][0], corners[1][0] + 1):
-                for ty in range(corners[0][1], corners[1][1] + 1):
-                    for tz in range(z - 2, z + 1):
-                        new_keys.append((tx, ty, tz))
+            for x in range(corners[0][0], corners[1][0] + 1):
+                for y in range(corners[0][1], corners[1][1] + 1):
+                    for z in range(playerz - 1, playerz + 2):
+                        new_keys.append((x, y, z))
 
             # Load new chunks
             for chunkx, chunky, chunkz in new_keys:
-                # Check if chunk is already loaded
-                if (chunkx, chunky, chunkz) not in self.loaded_chunks.keys():
+                if (chunkx, chunky, chunkz) not in self.chunks.keys():
                     print(f"loading {(chunkx, chunky, chunkz)}")
                     self.load_chunk(chunkx, chunky, chunkz)
 
             # Unload old chunks
             to_remove = list(set(old_keys) - set(new_keys))
             for key in to_remove:
-                print(f"unloading {(chunkx, chunky, chunkz)}")
+                print(f"unloading {(key[0], key[1], key[2])}")
                 self.unload_chunk(key)
                             
                         
         def load_chunk(self, chunkx, chunky, chunkz):
-            self.loaded_chunks[(chunkx, chunky, chunkz)] = chunk.Chunk(chunkx, chunky, chunkz)
+            c = chunk.Chunk(chunkx, chunky, chunkz)
+            c.push_handlers(on_update=self.on_tile_update)
+            self.chunks[(chunkx, chunky, chunkz)] = c
 
         def unload_chunk(self, key):
-            self.loaded_chunks[key].save()
+            self.chunks[key].save()
             try:
-                self.loaded_chunks[key].delete()
+                self.chunks[key].delete()
             except:
                 pass
-            del self.loaded_chunks[key]
+            del self.chunks[key]
 
         def get_chunkpos_at(self, worldx, worldy):
             chunkx = int((worldx + constants.TILE_SIZE / 2) // (constants.TILE_SIZE * constants.CHUNK_SIZE))
@@ -103,7 +112,7 @@ class Terrain():
             return tile
         
 
-        def update_chunks_on_screen(self, player_x, player_y, player_z):
+        def update_chunks_on_screen_old(self, player_x, player_y, player_z):
             min_x = int(player_x - constants.SCREEN_WIDTH // 2)
             min_y = int(player_y - constants.SCREEN_HEIGHT // 2)
             max_x = int(player_x + constants.SCREEN_WIDTH // 2 + constants.TILE_SIZE // 2)

@@ -25,15 +25,15 @@ class Chunk(pyglet.event.EventDispatcher):
 
 
     def set_pos(self, x, y, z):
-        if z < 0:
-            c_above = terrain.Terrain().chunks[(self.chunk_x, self.chunk_y, self.chunk_z + 1)]
+        #if z < 0:
+        #    c_above = terrain.Terrain().chunks[(self.chunk_x, self.chunk_y, self.chunk_z + 1)]
         for col in self.tiles:
             for tile in col:
                 # Don't render tile if block above
-                if z < 0 and c_above.tiles[tile.tile_x][tile.tile_y].material != "air":
-                    tile.batch = None
+                #if z < 0 and c_above.tiles[tile.tile_x][tile.tile_y].material != "air":
+                #    tile.batch = None
 
-                tile.set_pos(x, y, z)
+                tile.set_pos(x, y, self.chunk_z - z)
 
     def load_tiles(self):
         # TODO: Needs optimizing
