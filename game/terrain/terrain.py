@@ -25,10 +25,11 @@ class Terrain():
             self.chunks = {}
 
         def update(self, player_x, player_y, player_z):
-            self.load_chunks_on_screen(player_x, player_y, player_z)
             self.set_pos(player_x, player_y, player_z)
 
         def set_pos(self, x, y, z):
+            self.load_chunks_on_screen(x, y, z)
+
             for chunk in self.chunks.values():
                 worldx = chunk.chunk_x * constants.CHUNK_SIZE * constants.TILE_SIZE
                 worldy = chunk.chunk_y * constants.CHUNK_SIZE * constants.TILE_SIZE
@@ -37,6 +38,7 @@ class Terrain():
 
                 chunk.set_pos(screenx, screeny, z)
 
+        @wraps.timeit
         def load_chunks_on_screen(self, playerx, playery, playerz):
             w = constants.SCREEN_WIDTH // 2
             h = constants.SCREEN_HEIGHT // 2
@@ -110,52 +112,7 @@ class Terrain():
             
             tile = c.tiles[tile_x][tile_y]
             return tile
-        
 
-        def update_chunks_on_screen_old(self, player_x, player_y, player_z):
-            min_x = int(player_x - constants.SCREEN_WIDTH // 2)
-            min_y = int(player_y - constants.SCREEN_HEIGHT // 2)
-            max_x = int(player_x + constants.SCREEN_WIDTH // 2 + constants.TILE_SIZE // 2)
-            max_y = int(player_y + constants.SCREEN_HEIGHT // 2 + constants.TILE_SIZE // 2)
-
-            chunk_min_x = int(min_x // constants.TILE_SIZE) // constants.CHUNK_SIZE
-            chunk_min_y = int(min_y // constants.TILE_SIZE) // constants.CHUNK_SIZE
-            chunk_max_x = int(max_x // constants.TILE_SIZE) // constants.CHUNK_SIZE + 1
-            chunk_max_y = int(max_y // constants.TILE_SIZE) // constants.CHUNK_SIZE + 1
-
-            offset_x = min_x % (constants.CHUNK_SIZE * constants.TILE_SIZE)
-            offset_y = min_y % (constants.CHUNK_SIZE * constants.TILE_SIZE)
-
-
-            old_keys = self.chunks.keys() if self.chunks else []
-            new_keys = []
-
-
-            # Generate chunks
-            for z in range(player_z+1, player_z-2, -1):
-                for x in range(chunk_min_x, chunk_max_x):
-                    for y in range(chunk_min_y, chunk_max_y):
-                        new_keys.append((x, y, z))
-                        if ((x, y, z) in old_keys):
-                            c = self.chunks[(x, y, z)]
-                        else:
-                            c = chunk.Chunk(x, y, z)
-                            c.push_handlers(on_update=self.on_tile_update)
-                            self.chunks[(x, y, z)] = c
-
-                        c.set_pos((x - chunk_min_x) * constants.CHUNK_SIZE * constants.TILE_SIZE - offset_x,
-                                  (y - chunk_min_y) * constants.CHUNK_SIZE * constants.TILE_SIZE - offset_y, z - player_z)
-
-            # Remove chunks outside screen
-            to_remove = set(old_keys) - set(new_keys)
-            for key in to_remove:
-                self.chunks[key].save()
-                try:
-                    self.chunks[key].delete()
-                except:
-                    pass
-                del self.chunks[key]
-    
 
     def __init__(self, *args, **kwargs):
         if not Terrain.instance:
