@@ -2,7 +2,7 @@ import concurrent.futures
 
 import pyglet
 
-from game import debug
+from game import debug, classes, constants
 from game.terrain import data_handler, terrain_generation, terrain, tile
 
 
@@ -24,16 +24,12 @@ class Chunk(pyglet.event.EventDispatcher):
         self.dispatch_event("on_update", self.chunk_x, self.chunk_y, self.chunk_z, tile_x, tile_y)
 
 
-    def set_pos(self, x, y, z):
-        #if z < 0:
-        #    c_above = terrain.Terrain().chunks[(self.chunk_x, self.chunk_y, self.chunk_z + 1)]
+    def set_pos(self, pos):
+        screenpos = classes.Screenpos.from_worldcoords(self.chunk_x * constants.CHUNK_SIZE * constants.TILE_SIZE, self.chunk_y * constants.CHUNK_SIZE * constants.TILE_SIZE, pos)
         for col in self.tiles:
             for tile in col:
-                # Don't render tile if block above
-                #if z < 0 and c_above.tiles[tile.tile_x][tile.tile_y].material != "air":
-                #    tile.batch = None
-
-                tile.set_pos(x, y, self.chunk_z - z)
+                # TODO: Don't render if block above
+                tile.set_pos(screenpos.x, screenpos.y, self.chunk_z - pos.z)
 
     def load_tiles(self):
         # TODO: Needs optimizing

@@ -31,9 +31,7 @@ class Terrain():
             self.load_chunks_on_screen(pos)
 
             for chunk in self.chunks.values():
-                screenpos = classes.Screenpos.from_worldcoords(chunk.chunk_x * constants.CHUNK_SIZE * constants.TILE_SIZE, chunk.chunk_y * constants.CHUNK_SIZE * constants.TILE_SIZE, pos)
-
-                chunk.set_pos(screenpos.x, screenpos.y, pos.z)
+                chunk.set_pos(pos)
 
         @debug.timeit
         def load_chunks_on_screen(self, pos):
