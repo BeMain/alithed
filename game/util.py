@@ -3,30 +3,6 @@ import math
 from game import constants
 
 
-class Vector(object):
-    def __init__(self, x, y, *args, **kwargs):
-        super(Vector, self).__init__(*args, **kwargs)
-        
-        self.x = x
-        self.y = y
-    
-    @classmethod
-    def ZERO(cls):
-        return cls(0.0, 0.0)
-    
-    def normalize(self, precision=3):
-        v = math.atan2(self.y, self.x)
-        self.x = round(math.cos(v), precision)
-        self.y = round(math.sin(v), precision)
-
-    
-    def __bool__(self):
-        return self.x != 0 or self.y != 0
-
-    def __str__(self):
-        return f"Vector({self.x}, {self.y})"
-
-
 def clamp(my_value, min_value, max_value):
     return max(min(my_value, max_value), min_value)
 
