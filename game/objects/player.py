@@ -4,7 +4,7 @@ from pyglet.window import key
 import math
 import concurrent.futures
 
-from game import resources, util, constants, classes
+from game import resources, util, constants, classes, positions
 from game.terrain import terrain, data_handler
 from game.gui import pause
 
@@ -24,9 +24,9 @@ class Player(pyglet.sprite.Sprite):
         self.move_speed = 1000.0
         self.rotate_speed = 200.0
 
-        self.pos = classes.Worldpos()
+        self.pos = positions.Worldpos()
 
-        # Can't use classes.Screenpos since this is what Pyglet wants
+        # Can't use positions since this is what Pyglet wants
         self.x = constants.SCREEN_WIDTH // 2
         self.y = constants.SCREEN_HEIGHT // 2
 

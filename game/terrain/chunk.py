@@ -2,7 +2,7 @@ import concurrent.futures
 
 import pyglet
 
-from game import debug, classes, constants
+from game import debug, positions, constants
 from game.terrain import data_handler, terrain_generation, terrain, tile
 
 
@@ -12,7 +12,7 @@ class Chunk(pyglet.event.EventDispatcher):
         
         self.register_event_type("on_update")
 
-        self.chunkpos = classes.Chunkpos(chunk_x, chunk_y, chunk_z)
+        self.chunkpos = positions.Chunkpos(chunk_x, chunk_y, chunk_z)
 
         self.tiles = []
         self.load_tiles()

@@ -6,7 +6,7 @@ import itertools
 import pyglet
 from pyglet.window import key
 
-from game import constants, debug, util, classes
+from game import constants, debug, util
 from game.terrain import chunk, data_handler
 
 
