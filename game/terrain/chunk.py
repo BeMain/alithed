@@ -12,28 +12,26 @@ class Chunk(pyglet.event.EventDispatcher):
         
         self.register_event_type("on_update")
 
-        self.chunk_x = chunk_x
-        self.chunk_y = chunk_y
-        self.chunk_z = chunk_z
+        self.chunkpos = classes.Chunkpos(chunk_x, chunk_y, chunk_z)
 
         self.tiles = []
         self.load_tiles()
 
     
     def on_tile_update(self, tile_x, tile_y):
-        self.dispatch_event("on_update", self.chunk_x, self.chunk_y, self.chunk_z, tile_x, tile_y)
+        self.dispatch_event("on_update", self.chunkpos, tile_x, tile_y)
 
 
     def set_pos(self, pos):
-        screenpos = classes.Screenpos.from_worldcoords(self.chunk_x * constants.CHUNK_SIZE * constants.TILE_SIZE, self.chunk_y * constants.CHUNK_SIZE * constants.TILE_SIZE, pos)
+        screenpos = self.chunkpos.to_screenpos(pos)
         for col in self.tiles:
             for tile in col:
                 # TODO: Don't render if block above
-                tile.set_pos(screenpos.x, screenpos.y, self.chunk_z - pos.z)
+                tile.set_pos(screenpos.x, screenpos.y, self.chunkpos.z - pos.z)
 
     def load_tiles(self):
         # TODO: Needs optimizing
-        chunk = data_handler.load_chunk(self.chunk_x, self.chunk_y, self.chunk_z)
+        chunk = data_handler.load_chunk(self.chunkpos.x, self.chunkpos.y, self.chunkpos.z)
 
         # Turn the 3d-list of dicts -> 3d-list of Tiles
         self.tiles = list(map(lambda col: list(map(self.load_tile, col)), chunk))
@@ -57,4 +55,4 @@ class Chunk(pyglet.event.EventDispatcher):
 
     def save(self):
         with concurrent.futures.ThreadPoolExecutor() as executor:
-            executor.submit(data_handler.write_chunk, self.chunk_x, self.chunk_y, self.chunk_z, self.to_data())
+            executor.submit(data_handler.write_chunk, self.chunkpos.x, self.chunkpos.y, self.chunkpos.z, self.to_data())

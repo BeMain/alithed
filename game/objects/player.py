@@ -59,7 +59,7 @@ class Player(pyglet.sprite.Sprite):
         
     def handle_xy_movement(self, dt):
         # Handle movement
-        dpos = classes.Vector(0,0)
+        dpos = classes.Vector2(0,0)
         if self.key_handler[key.RIGHT] or self.key_handler[key.D]:
             dpos.x += 1
         if self.key_handler[key.LEFT] or self.key_handler[key.A]:
@@ -77,10 +77,10 @@ class Player(pyglet.sprite.Sprite):
 
             if dpos.x:
                 # Move in x-direction
-                self.move_xory(classes.Vector(dpos.x, 0), speed)
+                self.move_xory(classes.Vector2(dpos.x, 0), speed)
             if dpos.y:
                 # Move in y-direction
-                self.move_xory(classes.Vector(0, dpos.y), speed)
+                self.move_xory(classes.Vector2(0, dpos.y), speed)
 
             # Trigger move event
             self.dispatch_event("on_move")
