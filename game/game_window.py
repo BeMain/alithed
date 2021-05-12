@@ -73,7 +73,7 @@ class GameWindow(pyglet.window.Window):
 
 
     def on_tile_update(self, chunk_x, chunk_y, chunk_z, tile_x, tile_y):
-        self.terrain.update(self.player.world_x, self.player.world_y, self.player.world_z)
+        self.terrain.update(self.player.pos)
 
 
     def on_key_press(self, symbol, modifiers):
@@ -96,10 +96,10 @@ class GameWindow(pyglet.window.Window):
         x = util.clamp(x, 0, constants.SCREEN_WIDTH)
         y = util.clamp(y, 0, constants.SCREEN_HEIGHT)
 
-        world_x = self.player.world_x - constants.SCREEN_WIDTH / 2 + x
-        world_y = self.player.world_y - constants.SCREEN_HEIGHT / 2 + y
+        world_x = self.player.pos.x - constants.SCREEN_WIDTH / 2 + x
+        world_y = self.player.pos.y - constants.SCREEN_HEIGHT / 2 + y
         
-        tile = self.terrain.get_tile(world_x, world_y, self.player.world_z)
+        tile = self.terrain.get_tile(world_x, world_y, self.player.pos.z)
         if tile.material == "air":
             tile.set_material("stone")
         else:
@@ -113,7 +113,7 @@ class GameWindow(pyglet.window.Window):
 
     
         # Update terrain
-        self.terrain.update(self.player.world_x, self.player.world_y, self.player.world_z)
+        self.terrain.update(self.player.pos)
 
         self.last_scheduled_update = time.time()
 

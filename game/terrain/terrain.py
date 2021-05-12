@@ -6,7 +6,7 @@ import itertools
 import pyglet
 from pyglet.window import key
 
-from game import constants, debug, util
+from game import constants, debug, util, classes
 from game.terrain import chunk, data_handler
 
 
@@ -24,29 +24,26 @@ class Terrain():
             self.corner_chunks = []
             self.chunks = {}
 
-        def update(self, player_x, player_y, player_z):
-            self.set_pos(player_x, player_y, player_z)
+        def update(self, playerpos):
+            self.set_pos(playerpos)
 
-        def set_pos(self, x, y, z):
-            self.load_chunks_on_screen(x, y, z)
+        def set_pos(self, pos):
+            self.load_chunks_on_screen(pos)
 
             for chunk in self.chunks.values():
-                worldx = chunk.chunk_x * constants.CHUNK_SIZE * constants.TILE_SIZE
-                worldy = chunk.chunk_y * constants.CHUNK_SIZE * constants.TILE_SIZE
+                screenpos = classes.Screenpos.from_worldcoords(chunk.chunk_x * constants.CHUNK_SIZE * constants.TILE_SIZE, chunk.chunk_y * constants.CHUNK_SIZE * constants.TILE_SIZE, pos)
 
-                screenx, screeny = util.to_screenpos((worldx, worldy), (x, y))
-
-                chunk.set_pos(screenx, screeny, z)
+                chunk.set_pos(screenpos.x, screenpos.y, pos.z)
 
         @debug.timeit
-        def load_chunks_on_screen(self, playerx, playery, playerz):
+        def load_chunks_on_screen(self, pos):
             w = constants.SCREEN_WIDTH // 2
             h = constants.SCREEN_HEIGHT // 2
 
             # Get chunk positions for lower left and upper right corner corners
             corners = []
             for pair in [(-1, -1), (1, 1)]:
-                corners.append(self.get_chunkpos_at(pair[0] * w + playerx, pair[1] * h + playery))
+                corners.append(self.get_chunkpos_at(pair[0] * w + pos.x, pair[1] * h + pos.y))
             self.corner_chunks = corners
 
             old_keys = self.chunks.keys() if self.chunks else []
@@ -54,7 +51,7 @@ class Terrain():
             new_keys = []
             for x in range(corners[0][0], corners[1][0] + 1):
                 for y in range(corners[0][1], corners[1][1] + 1):
-                    for z in range(playerz - 1, playerz + 2):
+                    for z in range(pos.z - 1, pos.z + 2):
                         new_keys.append((x, y, z))
 
             # Load new chunks

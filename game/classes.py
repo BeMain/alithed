@@ -29,13 +29,13 @@ class Vector(object):
 
 class Worldpos(object):
     def __init__(self, x=0.0, y=0.0, z=0):
-        super(Worldpos, self).__init__(*args, **kwargs)
+        super(Worldpos, self).__init__()
 
         self.x = x
         self.y = y
         self.z = z
     
-    def to_screenpos(playerpos):
+    def to_screenpos(self, playerpos):
         return Screenpos(self.x - playerpos.x + constants.SCREEN_WIDTH // 2, self.y - playerpos.y + constants.SCREEN_HEIGHT // 2)
 
 
@@ -54,7 +54,7 @@ class Worldpos(object):
 
 class Screenpos(object):
     def __init__(self, x=0.0, y=0.0):
-        super(Screenpos, self).__init__(*args, **kwargs)
+        super(Screenpos, self).__init__()
 
         self.x = x
         self.y = y
@@ -71,3 +71,7 @@ class Screenpos(object):
 
     def __str__(self):
         return f"({self.x}, {self.y})"
+    
+    @classmethod
+    def from_worldcoords(cls, x, y, playerpos):
+        return Worldpos(x, y, 0).to_screenpos(playerpos)
