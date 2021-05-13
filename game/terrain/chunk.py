@@ -31,7 +31,7 @@ class Chunk(pyglet.event.EventDispatcher):
 
     def load_tiles(self):
         # TODO: Needs optimizing
-        chunk = data_handler.load_chunk(self.chunkpos.x, self.chunkpos.y, self.chunkpos.z)
+        chunk = data_handler.load_chunk(self.chunkpos)
 
         # Turn the 3d-list of dicts -> 3d-list of Tiles
         self.tiles = list(map(lambda col: list(map(self.load_tile, col)), chunk))
@@ -55,4 +55,4 @@ class Chunk(pyglet.event.EventDispatcher):
 
     def save(self):
         with concurrent.futures.ThreadPoolExecutor() as executor:
-            executor.submit(data_handler.write_chunk, self.chunkpos.x, self.chunkpos.y, self.chunkpos.z, self.to_data())
+            executor.submit(data_handler.write_chunk, self.chunkpos, self.to_data())
