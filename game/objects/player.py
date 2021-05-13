@@ -4,7 +4,7 @@ from pyglet.window import key
 import math
 import concurrent.futures
 
-from game import resources, util, constants, classes, positions
+from game import resources, constants, classes, positions
 from game.terrain import terrain, data_handler
 from game.gui import pause
 
@@ -26,9 +26,10 @@ class Player(pyglet.sprite.Sprite):
 
         self.pos = positions.Worldpos()
 
-        # Can't use positions since this is what Pyglet wants
+        # Can't use just positions since this is what Pyglet wants
         self.x = constants.SCREEN_WIDTH // 2
         self.y = constants.SCREEN_HEIGHT // 2
+        self.screenpos = positions.Screenpos(self.x, self.y)
 
         # Load player data
         self.load_data()
@@ -131,8 +132,9 @@ class Player(pyglet.sprite.Sprite):
 
     @pause.pausable
     def on_mouse_motion(self, x, y, dx, dy):
-        self.rotation = util.angle_between((self.x, self.y), (x, y))
+        pos = positions.Screenpos(x, y)
+        self.rotation = self.screenpos.angle_to(pos)
 
 
     def collides_with(self, sprite):
-        return util.distancesq((self.x, self.y), (sprite.x, sprite.y)) < ((self.width + sprite.width) / 2) ** 2
+        return self.screenpos.distancesq_to(sprite.x, sprite.y) < ((self.width + sprite.width) // 2) ** 2

@@ -9,6 +9,19 @@ class Pos2(object):
         self.y = y
 
 
+    def clamp(self, minpos, maxpos):
+        self.x = max(min(self.x, maxpos.x), minpos.x)
+        self.y = max(min(self.y, maxpos.y), minpos.y)
+    
+    def distancesq_to(self, pos):
+        return (self.x - pos.x)**2 + (self.y - pos.y)**2
+    
+    def angle_to(self, pos):
+        x = self.x - pos.x
+        y = self.y - pos.y
+        return -math.degrees(math.atan2(y, x))
+
+
     def to_coords(self):
         return self.x, self.y
     
@@ -47,6 +60,12 @@ class Pos3(object):
         self.x = x
         self.y = y
         self.z = z
+
+
+    def clamp(self, minpos, maxpos):
+        self.x = max(min(self.x, maxpos.x), minpos.x)
+        self.y = max(min(self.y, maxpos.y), minpos.y)
+        self.z = max(min(self.z, maxpos.z), minpos.z)
 
 
     def to_coords(self):

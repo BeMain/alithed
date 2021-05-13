@@ -6,7 +6,7 @@ import glooey
 import time
 import math
 
-from game import constants, resources, util, debug
+from game import constants, resources, positions, debug
 from game.objects import player
 from game.terrain import terrain, tile, data_handler
 from game.gui import pause
@@ -93,13 +93,12 @@ class GameWindow(pyglet.window.Window):
 
     @pause.pausable
     def on_mouse_press(self, x, y, button, modifiers):
-        x = util.clamp(x, 0, constants.SCREEN_WIDTH)
-        y = util.clamp(y, 0, constants.SCREEN_HEIGHT)
+        pos = positions.Screenpos(x, y)
+        pos.clamp_to_screen()
 
-        world_x = self.player.pos.x - constants.SCREEN_WIDTH / 2 + x
-        world_y = self.player.pos.y - constants.SCREEN_HEIGHT / 2 + y
+        worldpos = pos.to_worldpos(self.player.pos)
         
-        tile = self.terrain.get_tile(world_x, world_y, self.player.pos.z)
+        tile = self.terrain.get_tile(worldpos.x, worldpos.y, self.player.pos.z)
         if tile.material == "air":
             tile.set_material("stone")
         else:
