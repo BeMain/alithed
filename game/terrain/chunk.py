@@ -7,12 +7,12 @@ from game.terrain import data_handler, terrain_generation, terrain, tile
 
 
 class Chunk(pyglet.event.EventDispatcher):
-    def __init__(self, chunk_x, chunk_y, chunk_z, *args, **kwargs):
-        super(Chunk, self).__init__(*args, **kwargs)
+    def __init__(self, chunkpos):
+        super(Chunk, self).__init__()
         
         self.register_event_type("on_update")
 
-        self.chunkpos = positions.Chunkpos(chunk_x, chunk_y, chunk_z)
+        self.chunkpos = chunkpos
 
         self.tiles = []
         self.load_tiles()

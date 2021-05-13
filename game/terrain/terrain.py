@@ -6,7 +6,7 @@ import itertools
 import pyglet
 from pyglet.window import key
 
-from game import constants, debug
+from game import constants, debug, positions
 from game.terrain import chunk, data_handler
 
 
@@ -21,7 +21,6 @@ class Terrain():
 
             self.register_event_type("on_update")
             
-            self.corner_chunks = []
             self.chunks = {}
 
         def update(self, playerpos):
@@ -40,40 +39,40 @@ class Terrain():
 
             # Get chunk positions for lower left and upper right corner corners
             corners = []
-            for pair in [(-1, -1), (1, 1)]:
-                corners.append(self.get_chunkpos_at(pair[0] * w + pos.x, pair[1] * h + pos.y))
-            self.corner_chunks = corners
+            for rel_cords in [(-1, -1), (1, 1)]:
+                x, y = self.get_chunkpos_at(rel_cords[0] * w + pos.x, rel_cords[1] * h + pos.y)
+                corners.append(positions.Chunkpos(x, y, 0))
 
             old_keys = self.chunks.keys() if self.chunks else []
             # Get positions for chunks on screen
             new_keys = []
-            for x in range(corners[0][0], corners[1][0] + 1):
-                for y in range(corners[0][1], corners[1][1] + 1):
+            for x in range(corners[0].x, corners[1].x + 1):
+                for y in range(corners[0].y, corners[1].y + 1):
                     for z in range(pos.z - 1, pos.z + 2):
-                        new_keys.append((x, y, z))
+                        new_keys.append(str((x, y, z)))
 
             # Load new chunks
-            for chunkx, chunky, chunkz in new_keys:
-                if (chunkx, chunky, chunkz) not in self.chunks.keys():
-                    debug.log(f"loading {(chunkx, chunky, chunkz)}")
-                    self.load_chunk(chunkx, chunky, chunkz)
+            for key in new_keys:
+                if key not in self.chunks.keys():
+                    debug.log(f"loading {key}")
+                    self.load_chunk(positions.Chunkpos.from_str(key))
 
             # Unload old chunks
             to_remove = list(set(old_keys) - set(new_keys))
             for key in to_remove:
-                debug.log(f"unloading {(key[0], key[1], key[2])}")
-                self.unload_chunk(key)
+                debug.log(f"unloading {key}")
+                self.unload_chunk(positions.Chunkpos.from_str(key))
                             
                         
-        def load_chunk(self, chunkx, chunky, chunkz):
-            c = chunk.Chunk(chunkx, chunky, chunkz)
+        def load_chunk(self, chunkpos):
+            c = chunk.Chunk(chunkpos)
             c.push_handlers(on_update=self.on_tile_update)
-            self.chunks[(chunkx, chunky, chunkz)] = c
+            self.chunks[str(chunkpos)] = c
 
-        def unload_chunk(self, key):
-            self.chunks[key].save()
-            self.chunks[key].delete()
-            del self.chunks[key]
+        def unload_chunk(self, chunkpos):
+            self.chunks[str(chunkpos)].save()
+            self.chunks[str(chunkpos)].delete()
+            del self.chunks[str(chunkpos)]
 
         def get_chunkpos_at(self, worldx, worldy):
             chunkx = int((worldx + constants.TILE_SIZE / 2) // (constants.TILE_SIZE * constants.CHUNK_SIZE))
@@ -100,7 +99,7 @@ class Terrain():
                 c = self.chunks[(chunk_x, chunk_y, z)]
             else:
                 # Load the chunk from memory
-                c = chunk.Chunk(chunk_x, chunk_y, z)
+                c = chunk.Chunk(positions.Chunkpos(chunk_x, chunk_y, z))
             
             tile = c.tiles[tile_x][tile_y]
             return tile

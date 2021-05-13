@@ -25,6 +25,10 @@ class Pos2(object):
     def to_coords(self):
         return self.x, self.y
     
+    @classmethod
+    def from_str(cls, s):
+        return cls(*eval(s))
+
     def to_list(self):
         return [self.x, self.y]
 
@@ -101,6 +105,10 @@ class Pos3(object):
     def to_coords(self):
         return self.x, self.y, self.z
     
+    @classmethod
+    def from_str(cls, s):
+        return cls(*eval(s))
+    
     def to_list(self):
         return [self.x, self.y, self.z]
 
@@ -156,7 +164,7 @@ class Pos3(object):
             return self.__class__(self.x // other, self.y // other, self.z // other)
 
     def __str__(self):
-        return f"{self.__class__.__name__}({self.x}, {self.y}, {self.z})"
+        return f"({self.x}, {self.y}, {self.z})"
 
 
 class Vector2(object):
@@ -180,5 +188,5 @@ class Vector2(object):
         return self.x != 0 or self.y != 0
 
     def __str__(self):
-        return f"{self.__class__.__name__}({self.x}, {self.y})"
+        return f"({self.x}, {self.y})"
 
