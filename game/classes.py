@@ -44,17 +44,22 @@ class Pos2(object):
         return self.x != 0 or self.y != 0
 
     def __eq__(self, other):
-        return self.x == other.x and self.y == other.y
+        try:
+            return self.x == other.x and self.y == other.y
+        except:
+            return self.x == other and self.y == other
     
     def __add__(self, other):
-        if isinstance(other, self.__class__):
+        try:
             return self.__class__(self.x + other.x, self.y + other.y)
-        return self.__class__(self.x + other, self.y + other)
+        except:
+            return self.__class__(self.x + other, self.y + other)
 
     def __sub__(self, otherpos):
-        if isinstance(other, self.__class__):
+        try:
             return self.__class__(self.x - otherpos.x, self.y - otherpos.y)
-        return self.__class__(self.x - other, self.y - other)
+        except:
+            return self.__class__(self.x - other, self.y - other)
     
     def __mul__(self, other):
         return self.__class__(self.x * other, self.y * other)
@@ -100,19 +105,22 @@ class Pos3(object):
         return self.x != 0 or self.y != 0 or self.z != 0
 
     def __eq__(self, other):
-        if isinstance(other, self.__class__):
+        try:
             return self.x == other.x and self.y == other.y and self.z == other.z
-        return False
+        except:
+            return self.x == other and self.y == other and self.z == other
     
     def __add__(self, other):
-        if isinstance(other, self.__class__):
+        try:
             return self.__class__(self.x + other.x, self.y + other.y, self.z + other.z)
-        return self.__class__(self.x + other, self.y + other, self.z + other)
+        except:
+            return self.__class__(self.x + other, self.y + other, self.z + other)
     
     def __sub__(self, otherpos):
         if isinstance(other, self.__class__):
             return self.__class__(self.x - otherpos.x, self.y - otherpos.y, self.z - otherpos.z)
-        return self.__class__(self.x - other, self.y - other, self.z - other)
+        except:
+            return self.__class__(self.x - other, self.y - other, self.z - other)
     
     def __mul__(self, other):
         return self.__class__(self.x * other, self.y * other, self.z * other)
