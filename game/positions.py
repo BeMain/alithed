@@ -8,6 +8,9 @@ class Screenpos(classes.Pos2):
 
     def clamp_to_screen(self):
         self.clamp(Screenpos(), Screenpos.screensize())
+    
+    def is_on_screen(self, margin=0):
+        return (self.x > -margin) and (self.x < constants.SCREEN_WIDTH + margin) and (self.y > -margin) and (self.y < constants.SCREEN_HEIGHT + margin)
 
 
     def to_worldpos(self, playerpos):

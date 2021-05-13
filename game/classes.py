@@ -47,7 +47,17 @@ class Pos2(object):
         return self.x == other.x and self.y == other.y
     
     def __add__(self, other):
-        return self.__class__(self.x + other.x, self.y + other.y)
+        if isinstance(other, self.__class__):
+            return self.__class__(self.x + other.x, self.y + other.y)
+        return self.__class__(self.x + other, self.y + other)
+
+    def __sub__(self, otherpos):
+        if isinstance(other, self.__class__):
+            return self.__class__(self.x - otherpos.x, self.y - otherpos.y)
+        return self.__class__(self.x - other, self.y - other)
+    
+    def __mul__(self, other):
+        return self.__class__(self.x * other, self.y * other)
 
     def __str__(self):
         return f"({self.x}, {self.y})"
@@ -90,10 +100,22 @@ class Pos3(object):
         return self.x != 0 or self.y != 0 or self.z != 0
 
     def __eq__(self, other):
-        return self.x == other.x and self.y == other.y and self.z == other.z
+        if isinstance(other, self.__class__):
+            return self.x == other.x and self.y == other.y and self.z == other.z
+        return False
     
     def __add__(self, other):
-        return self.__class__(self.x + other.x, self.y + other.y, self.z + other.z)
+        if isinstance(other, self.__class__):
+            return self.__class__(self.x + other.x, self.y + other.y, self.z + other.z)
+        return self.__class__(self.x + other, self.y + other, self.z + other)
+    
+    def __sub__(self, otherpos):
+        if isinstance(other, self.__class__):
+            return self.__class__(self.x - otherpos.x, self.y - otherpos.y, self.z - otherpos.z)
+        return self.__class__(self.x - other, self.y - other, self.z - other)
+    
+    def __mul__(self, other):
+        return self.__class__(self.x * other, self.y * other, self.z * other)
 
     def __str__(self):
         return f"{self.__class__.__name__}({self.x}, {self.y}, {self.z})"

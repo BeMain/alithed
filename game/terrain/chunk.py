@@ -27,7 +27,7 @@ class Chunk(pyglet.event.EventDispatcher):
         for col in self.tiles:
             for tile in col:
                 # TODO: Don't render if block above
-                tile.set_pos(screenpos.x, screenpos.y, self.chunkpos.z - pos.z)
+                tile.set_pos(screenpos, self.chunkpos.z - pos.z)
 
     def load_tiles(self):
         # TODO: Needs optimizing
