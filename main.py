@@ -1,4 +1,4 @@
-from game import game_window, debug
+from game import game_window, debug, positions
 from game.terrain import data_handler
 
 

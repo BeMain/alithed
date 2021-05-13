@@ -9,6 +9,24 @@ class Pos2(object):
         self.y = y
 
 
+    def to_coords(self):
+        return self.x, self.y
+    
+    def to_list(self):
+        return [self.x, self.y]
+
+    @classmethod
+    def from_list(cls, lst):
+        return cls(*lst)
+
+    def to_dict(self):
+        return {"x": self.x, "y": self.y}
+
+    @classmethod
+    def from_dict(cls, dct):
+        return cls(**dct)
+
+
     def __bool__(self):
         return self.x != 0 or self.y != 0
 
@@ -29,6 +47,24 @@ class Pos3(object):
         self.x = x
         self.y = y
         self.z = z
+
+
+    def to_coords(self):
+        return self.x, self.y, self.z
+    
+    def to_list(self):
+        return [self.x, self.y, self.z]
+
+    @classmethod
+    def from_list(cls, lst):
+        return cls(*lst)
+
+    def to_dict(self):
+        return {"x": self.x, "y": self.y, "z": self.z}
+
+    @classmethod
+    def from_dict(cls, dct):
+        return cls(**dct)
 
 
     def __bool__(self):
