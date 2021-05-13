@@ -62,7 +62,10 @@ class Pos2(object):
             return self.__class__(self.x - other, self.y - other)
     
     def __mul__(self, other):
-        return self.__class__(self.x * other, self.y * other)
+        try:
+            return self.__class__(self.x * other.x, self.y * other.y)
+        except:
+            return self.__class__(self.x * other, self.y * other)
 
     def __str__(self):
         return f"({self.x}, {self.y})"
@@ -123,7 +126,10 @@ class Pos3(object):
             return self.__class__(self.x - other, self.y - other, self.z - other)
     
     def __mul__(self, other):
-        return self.__class__(self.x * other, self.y * other, self.z * other)
+        try:
+            return self.__class__(self.x * other.x, self.y * other.y, self.z * other.z)
+        except:
+            return self.__class__(self.x * other, self.y * other, self.z * other)
 
     def __str__(self):
         return f"{self.__class__.__name__}({self.x}, {self.y}, {self.z})"
