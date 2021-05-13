@@ -81,8 +81,8 @@ class Terrain():
             return chunkx, chunky
 
 
-        def on_tile_update(self, chunk_x, chunk_y, chunk_z, tile_x, tile_y):
-            self.dispatch_event("on_update", chunk_x, chunk_y, chunk_z, tile_x, tile_y)
+        def on_tile_update(self, chunkpos, tilepos):
+            self.dispatch_event("on_update", chunkpos, tilepos)
 
         def get_tile(self, world_x, world_y, z):
             chunk_x, chunk_y = self.get_chunkpos_at(world_x, world_y)

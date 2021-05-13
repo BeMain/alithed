@@ -18,8 +18,8 @@ class Chunk(pyglet.event.EventDispatcher):
         self.load_tiles()
 
     
-    def on_tile_update(self, tile_x, tile_y):
-        self.dispatch_event("on_update", self.chunkpos, tile_x, tile_y)
+    def on_tile_update(self, tilepos):
+        self.dispatch_event("on_update", self.chunkpos, tilepos)
 
 
     def set_pos(self, pos):

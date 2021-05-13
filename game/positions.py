@@ -27,3 +27,9 @@ class Chunkpos(classes.Pos3):
     
     def to_screenpos(self, playerpos):
         return self.to_worldpos().to_screenpos(playerpos)
+
+
+class Tilepos(classes.Pos2):
+    def __init__(self, *args, **kwargs):
+        super(Tilepos, self).__init__(*args, **kwargs)
+    

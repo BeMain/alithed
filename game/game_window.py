@@ -72,7 +72,7 @@ class GameWindow(pyglet.window.Window):
             obj.update(dt)
 
 
-    def on_tile_update(self, chunk_x, chunk_y, chunk_z, tile_x, tile_y):
+    def on_tile_update(self, chunkpos, tilepos):
         self.terrain.update(self.player.pos)
 
 

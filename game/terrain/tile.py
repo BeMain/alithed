@@ -1,6 +1,6 @@
 import pyglet
 
-from game import resources, constants, style
+from game import resources, constants, style, positions
 
 class Tile(pyglet.sprite.Sprite):
     BATCH = None
@@ -14,8 +14,7 @@ class Tile(pyglet.sprite.Sprite):
         self.value = 0
         self.material = "air"
 
-        self.tile_x = 0
-        self.tile_y = 0
+        self.tilepos = positions.Tilepos()
     
     @staticmethod
     def init_rendering(batch, group):
@@ -27,8 +26,8 @@ class Tile(pyglet.sprite.Sprite):
         }
 
     def set_pos(self, x, y, z):
-        new_x = x + self.tile_x * self.width
-        new_y = y + self.tile_y * self.height
+        new_x = x + self.tilepos.x * self.width
+        new_y = y + self.tilepos.y * self.height
 
         # Check bounds
         if (new_x < -constants.TILE_SIZE // 2) or (new_x > constants.SCREEN_WIDTH + constants.TILE_SIZE // 2) or (new_y < -constants.TILE_SIZE // 2) or (new_y > constants.SCREEN_HEIGHT + constants.TILE_SIZE // 2):
@@ -58,12 +57,12 @@ class Tile(pyglet.sprite.Sprite):
             self.batch = self.BATCH
         
         # Trigger update
-        self.dispatch_event("on_update", self.tile_x, self.tile_y)
+        self.dispatch_event("on_update", self.tilepos)
 
     def to_data(self):
         return {
-            "tile_x": self.tile_x,
-            "tile_y": self.tile_y,
+            "tile_x": self.tilepos.x,
+            "tile_y": self.tilepos.y,
             "value": self.value,
             "material": self.material,
         }
@@ -72,8 +71,8 @@ class Tile(pyglet.sprite.Sprite):
     def from_data(cls, data):
         t = cls()
 
-        t.tile_x = data["tile_x"]
-        t.tile_y = data["tile_y"]
+        t.tilepos.x = data["tile_x"]
+        t.tilepos.y = data["tile_y"]
 
         color = data["value"] * 255
         t.color = (color, color, color)
