@@ -117,7 +117,7 @@ class Pos3(object):
             return self.__class__(self.x + other, self.y + other, self.z + other)
     
     def __sub__(self, otherpos):
-        if isinstance(other, self.__class__):
+        try:
             return self.__class__(self.x - otherpos.x, self.y - otherpos.y, self.z - otherpos.z)
         except:
             return self.__class__(self.x - other, self.y - other, self.z - other)
