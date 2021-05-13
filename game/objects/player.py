@@ -36,15 +36,11 @@ class Player(pyglet.sprite.Sprite):
     def load_data(self):
         data = data_handler.read_player_data()
         if data:
-            self.pos.x = data["world_x"]
-            self.pos.y = data["world_y"]
-            self.pos.z = data["world_z"]
+            self.pos = positions.Worldpos.from_list(data["worldpos"])
     
     def to_data(self):
         return {
-            "world_x": self.pos.x,
-            "world_y": self.pos.y,
-            "world_z": self.pos.z,
+            "worldpos": self.pos.to_list()
         }
     
     def save(self):

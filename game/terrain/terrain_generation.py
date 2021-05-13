@@ -1,7 +1,6 @@
-# Using Python 3.7.4
 import perlin_noise
 
-from game import constants
+from game import constants, positions
 
 
 octaves = 2
@@ -29,8 +28,7 @@ def generate_chunk(chunk_x, chunk_y, chunk_z):
             t_data = {
                 "value": pixel,
                 "material": ("stone" if pixel >= threshold else "air"),
-                "tile_x": x,
-                "tile_y": y,
+                "tilepos": positions.Tilepos(x, y).to_list()
             }
 
             col.append(t_data)
