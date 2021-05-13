@@ -83,23 +83,24 @@ class Terrain():
         def on_tile_update(self, chunkpos, tilepos):
             self.dispatch_event("on_update", chunkpos, tilepos)
 
-        def get_tile(self, world_x, world_y, z):
-            chunk_x, chunk_y = self.get_chunkpos_at(world_x, world_y)
+        def get_tile(self, x, y, z):
+            worldpos = positions.Worldpos(x, y, z)
+            chunkpos = worldpos.to_chunkpos()
 
-            tile_x = int(round((world_x) % (constants.CHUNK_SIZE * constants.TILE_SIZE) / constants.TILE_SIZE))
-            tile_y = int(round((world_y) % (constants.CHUNK_SIZE * constants.TILE_SIZE) / constants.TILE_SIZE))
+            tile_x = int(round((worldpos.x) % (constants.CHUNK_SIZE * constants.TILE_SIZE) / constants.TILE_SIZE))
+            tile_y = int(round((worldpos.y) % (constants.CHUNK_SIZE * constants.TILE_SIZE) / constants.TILE_SIZE))
 
             # Make sure the value is within bounds
             if tile_x == constants.CHUNK_SIZE: tile_x = 0
             if tile_y == constants.CHUNK_SIZE: tile_y = 0
 
             # Check if requested chunk is loaded
-            if (chunk_x, chunk_y, z) in self.chunks.keys():
+            try:
                 # Just grab the correct chunk
-                c = self.chunks[(chunk_x, chunk_y, z)]
-            else:
+                c = self.chunks[str(chunkpos)]
+            except:
                 # Load the chunk from memory
-                c = chunk.Chunk(positions.Chunkpos(chunk_x, chunk_y, z))
+                c = chunk.Chunk(chunkpos)
             
             tile = c.tiles[tile_x][tile_y]
             return tile

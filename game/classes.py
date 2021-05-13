@@ -21,6 +21,9 @@ class Pos2(object):
         y = self.y - pos.y
         return -math.degrees(math.atan2(y, x))
 
+    @classmethod
+    def from_pos2(cls, pos2):
+        return cls(*pos2.to_coords())
 
     def to_coords(self):
         return self.x, self.y
@@ -101,6 +104,10 @@ class Pos3(object):
         self.y = max(min(self.y, maxpos.y), minpos.y)
         self.z = max(min(self.z, maxpos.z), minpos.z)
 
+
+    @classmethod
+    def from_pos3(cls, pos3):
+        return cls(*pos3.to_coords())
 
     def to_coords(self):
         return self.x, self.y, self.z

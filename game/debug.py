@@ -1,7 +1,7 @@
 import functools
 import time
 
-CLEAR_WORLD_ON_STARTUP = True
+CLEAR_WORLD_ON_STARTUP = False
 ENABLE_LOGGING = True
 
 def log(data):

@@ -31,6 +31,10 @@ class Worldpos(classes.Pos3):
     
     def to_screenpos(self, playerpos):
         return Screenpos(self.x - playerpos.x + constants.SCREEN_WIDTH // 2, self.y - playerpos.y + constants.SCREEN_HEIGHT // 2)
+    
+    def to_chunkpos(self):
+        size = constants.TILE_SIZE * constants.CHUNK_SIZE
+        return Chunkpos.from_pos3(self // classes.Pos3(size, size, 1))
 
 
 class Chunkpos(classes.Pos3):
