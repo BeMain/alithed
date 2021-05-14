@@ -86,15 +86,11 @@ class Terrain():
         def get_tile(self, x, y, z):
             worldpos = positions.Worldpos(x, y, z)
             chunkpos = worldpos.to_chunkpos()
+            tilepos = worldpos.to_tilepos()
 
-            tile_x = int(round((worldpos.x) % (constants.CHUNK_SIZE * constants.TILE_SIZE) / constants.TILE_SIZE))
-            tile_y = int(round((worldpos.y) % (constants.CHUNK_SIZE * constants.TILE_SIZE) / constants.TILE_SIZE))
-
-            # Make sure the value is within bounds
-            if tile_x == constants.CHUNK_SIZE: tile_x = 0
-            if tile_y == constants.CHUNK_SIZE: tile_y = 0
-
-            # Check if requested chunk is loaded
+            # Make sure tilepos is within bounds
+            tilepos.loop_around(positions.Tilepos.chunksize())
+            
             try:
                 # Just grab the correct chunk
                 c = self.chunks[str(chunkpos)]
@@ -102,7 +98,7 @@ class Terrain():
                 # Load the chunk from memory
                 c = chunk.Chunk(chunkpos)
             
-            tile = c.tiles[tile_x][tile_y]
+            tile = c.tiles[tilepos.x][tilepos.y]
             return tile
 
 
