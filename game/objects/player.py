@@ -4,7 +4,7 @@ from pyglet.window import key
 import math
 import concurrent.futures
 
-from game import resources, constants, classes, positions
+from game import resources, constants, positions
 from game.terrain import terrain, data_handler
 from game.gui import pause
 
@@ -56,7 +56,7 @@ class Player(pyglet.sprite.Sprite):
         
     def handle_xy_movement(self, dt):
         # Handle movement
-        dpos = classes.Vector2(0,0)
+        dpos = positions.Vector2(0,0)
         if self.key_handler[key.RIGHT] or self.key_handler[key.D]:
             dpos.x += 1
         if self.key_handler[key.LEFT] or self.key_handler[key.A]:
@@ -74,16 +74,15 @@ class Player(pyglet.sprite.Sprite):
 
             if dpos.x:
                 # Move in x-direction
-                self.move_xory(classes.Vector2(dpos.x, 0), speed)
+                self.move_xory(positions.Vector2(dpos.x, 0), speed)
             if dpos.y:
                 # Move in y-direction
-                self.move_xory(classes.Vector2(0, dpos.y), speed)
+                self.move_xory(positions.Vector2(0, dpos.y), speed)
 
             # Trigger move event
             self.dispatch_event("on_move")
 
     def move_xory(self, dpos, speed):
-        # TODO: Smooth upward and downward movement
         tile = self.terrain.get_tile(self.pos.x + dpos.x * (speed + self.width / 2), self.pos.y + dpos.y * (speed + self.height / 2), self.pos.z)
         tile_b = self.terrain.get_tile(self.pos.x + dpos.x * (speed + self.width / 2), self.pos.y + dpos.y * (speed + self.height / 2), self.pos.z - 1)
 

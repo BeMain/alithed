@@ -1,6 +1,6 @@
 import perlin_noise
 
-from game import constants, positions, classes
+from game import constants, positions
 
 
 octaves = 2
@@ -15,7 +15,7 @@ def generate_chunk(chunkpos):
     global threshold
     global freq
 
-    worldpos = chunkpos * classes.Pos3(constants.CHUNK_SIZE, constants.CHUNK_SIZE, 4)
+    worldpos = chunkpos * positions.Pos3(constants.CHUNK_SIZE, constants.CHUNK_SIZE, 4)
 
     chunk = []
     

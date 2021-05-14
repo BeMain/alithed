@@ -6,7 +6,7 @@ import itertools
 import pyglet
 from pyglet.window import key
 
-from game import constants, debug, positions, classes
+from game import constants, debug, positions
 from game.terrain import chunk, data_handler
 
 
@@ -37,7 +37,7 @@ class Terrain():
             # Get chunk positions for lower left and upper right corner corners
             corners = []
             for rel_cords in [(-1, -1), (1, 1)]:
-                worldpos = pos + classes.Pos2.from_list(rel_cords) * positions.Screenpos.screensize() // 2
+                worldpos = pos + positions.Pos2.from_list(rel_cords) * positions.Screenpos.screensize() // 2
                 chunkpos = worldpos.to_chunkpos()
                 corners.append(chunkpos)
 

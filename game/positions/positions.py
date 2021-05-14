@@ -1,4 +1,5 @@
-from game import constants, classes
+from game import constants
+from game.positions import classes
 
 
 class Screenpos(classes.Pos2):
