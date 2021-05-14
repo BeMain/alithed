@@ -70,9 +70,9 @@ class Pos2(object):
         except:
             return self.__class__(self.x + other, self.y + other)
 
-    def __sub__(self, otherpos):
+    def __sub__(self, other):
         try:
-            return self.__class__(self.x - otherpos.x, self.y - otherpos.y)
+            return self.__class__(self.x - other.x, self.y - other.y)
         except:
             return self.__class__(self.x - other, self.y - other)
     
@@ -157,44 +157,65 @@ class Pos3(object):
     def __eq__(self, other):
         try:
             return self.x == other.x and self.y == other.y and self.z == other.z
-        except:
-            return self.x == other and self.y == other and self.z == other
+        except: pass
+        try: 
+            return self.x == other.x and self.y == other.y and self.z == 0
+        except: pass
+        return self.x == other and self.y == other and self.z == other
     
     def __add__(self, other):
         try:
             return self.__class__(self.x + other.x, self.y + other.y, self.z + other.z)
-        except:
-            return self.__class__(self.x + other, self.y + other, self.z + other)
+        except: pass
+        try: 
+            return self.__class__(self.x + other.x, self.y + other.y, self.z)
+        except: pass
+        return self.__class__(self.x + other, self.y + other, self.z + other)
     
     def __sub__(self, otherpos):
         try:
             return self.__class__(self.x - otherpos.x, self.y - otherpos.y, self.z - otherpos.z)
-        except:
-            return self.__class__(self.x - other, self.y - other, self.z - other)
+        except: pass
+        try: 
+            return self.__class__(self.x - other.x, self.y - other.y, self.z)
+        except: pass
+        return self.__class__(self.x - other, self.y - other, self.z - other)
     
     def __mul__(self, other):
         try:
             return self.__class__(self.x * other.x, self.y * other.y, self.z * other.z)
-        except:
-            return self.__class__(self.x * other, self.y * other, self.z * other)
+        except: pass
+        try: 
+            return self.__class__(self.x * other.x, self.y * other.y, self.z)
+        except: pass
+        return self.__class__(self.x * other, self.y * other, self.z * other)
     
     def __truediv__(self, other):
         try:
             return self.__class__(self.x / other.x, self.y / other.y, self.z / other.z)
-        except:
-            return self.__class__(self.x / other, self.y / other, self.z / other)
+        except: pass
+        try: 
+            return self.__class__(self.x / other.x, self.y / other.y, self.z)
+        except: pass
+        return self.__class__(self.x / other, self.y / other, self.z / other)
     
     def __floordiv__(self, other):
         try:
             return self.__class__(self.x // other.x, self.y // other.y, self.z // other.z)
-        except:
-            return self.__class__(self.x // other, self.y // other, self.z // other)
+        except: pass
+        try: 
+            return self.__class__(self.x // other.x, self.y // other.y, self.z)
+        except: pass
+        return self.__class__(self.x // other, self.y // other, self.z // other)
         
     def __mod__(self, other):
         try:
             return self.__class__(self.x % other.x, self.y % other.y, self.z % other.z)
-        except:
-            return self.__class__(self.x % other, self.y % other, self.z % other)
+        except: pass
+        try: 
+            return self.__class__(self.x % other.x, self.y % other.y, self.z)
+        except: pass
+        return self.__class__(self.x % other, self.y % other, self.z % other)
     
     def __int__(self):
         return self.__class__(int(self.x), int(self.y), int(self.z))
