@@ -6,7 +6,7 @@ import itertools
 import pyglet
 from pyglet.window import key
 
-from game import constants, debug, positions
+from game import constants, debug, positions, classes
 from game.terrain import chunk, data_handler
 
 
@@ -34,14 +34,12 @@ class Terrain():
 
         @debug.timeit
         def load_chunks_on_screen(self, pos):
-            w = constants.SCREEN_WIDTH // 2
-            h = constants.SCREEN_HEIGHT // 2
-
             # Get chunk positions for lower left and upper right corner corners
             corners = []
             for rel_cords in [(-1, -1), (1, 1)]:
-                x, y = self.get_chunkpos_at(rel_cords[0] * w + pos.x, rel_cords[1] * h + pos.y)
-                corners.append(positions.Chunkpos(x, y, 0))
+                worldpos = pos + classes.Pos2.from_list(rel_cords) * positions.Screenpos.screensize() // 2
+                chunkpos = worldpos.to_chunkpos()
+                corners.append(chunkpos)
 
             old_keys = self.chunks.keys() if self.chunks else []
             # Get positions for chunks on screen
@@ -55,29 +53,24 @@ class Terrain():
             for key in new_keys:
                 if key not in self.chunks.keys():
                     debug.log(f"loading {key}")
-                    self.load_chunk(positions.Chunkpos.from_str(key))
+                    self.load_chunk_at(positions.Chunkpos.from_str(key))
 
             # Unload old chunks
             to_remove = list(set(old_keys) - set(new_keys))
             for key in to_remove:
                 debug.log(f"unloading {key}")
-                self.unload_chunk(positions.Chunkpos.from_str(key))
+                self.unload_chunk_at(positions.Chunkpos.from_str(key))
                             
                         
-        def load_chunk(self, chunkpos):
+        def load_chunk_at(self, chunkpos):
             c = chunk.Chunk(chunkpos)
             c.push_handlers(on_update=self.on_tile_update)
             self.chunks[str(chunkpos)] = c
 
-        def unload_chunk(self, chunkpos):
+        def unload_chunk_at(self, chunkpos):
             self.chunks[str(chunkpos)].save()
             self.chunks[str(chunkpos)].delete()
             del self.chunks[str(chunkpos)]
-
-        def get_chunkpos_at(self, worldx, worldy):
-            chunkx = int((worldx + constants.TILE_SIZE / 2) // (constants.TILE_SIZE * constants.CHUNK_SIZE))
-            chunky = int((worldy + constants.TILE_SIZE / 2) // (constants.TILE_SIZE * constants.CHUNK_SIZE))
-            return chunkx, chunky
 
 
         def on_tile_update(self, chunkpos, tilepos):
@@ -90,7 +83,7 @@ class Terrain():
 
             # Make sure tilepos is within bounds
             tilepos.loop_around(positions.Tilepos.chunksize())
-            
+
             try:
                 # Just grab the correct chunk
                 c = self.chunks[str(chunkpos)]
