@@ -2,7 +2,7 @@ import math
 
 
 class Pos2(object):
-    def __init__(self, x=0.0, y=0.0):
+    def __init__(self, x=0, y=0):
         super(Pos2, self).__init__()
 
         self.x = x
@@ -12,6 +12,10 @@ class Pos2(object):
     def clamp(self, minpos, maxpos):
         self.x = max(min(self.x, maxpos.x), minpos.x)
         self.y = max(min(self.y, maxpos.y), minpos.y)
+    
+    def loop_around(self, maxpos):
+        if self.x >= maxpos.x: self.x %= maxpos.x
+        if self.y >= maxpos.y: self.y %= maxpos.y
     
     def distancesq_to(self, pos):
         return (self.x - pos.x)**2 + (self.y - pos.y)**2
@@ -24,6 +28,10 @@ class Pos2(object):
     @classmethod
     def from_pos2(cls, pos2):
         return cls(*pos2.to_coords())
+    
+    @classmethod
+    def from_pos3(cls, pos3):
+        return cls(*pos3.to_coords()[0:2])
 
     def to_coords(self):
         return self.x, self.y
@@ -76,22 +84,34 @@ class Pos2(object):
     
     def __truediv__(self, other):
         try:
-            return self.__class__(self.x / other.x, self.y / other.y, self.z / other.z)
+            return self.__class__(self.x / other.x, self.y / other.y)
         except:
-            return self.__class__(self.x / other, self.y / other, self.z / other)
+            return self.__class__(self.x / other, self.y / other)
     
     def __floordiv__(self, other):
         try:
-            return self.__class__(self.x // other.x, self.y // other.y, self.z // other.z)
+            return self.__class__(self.x // other.x, self.y // other.y)
         except:
-            return self.__class__(self.x // other, self.y // other, self.z // other)
+            return self.__class__(self.x // other, self.y // other)
+    
+    def __mod__(self, other):
+        try:
+            return self.__class__(self.x % other.x, self.y % other.y)
+        except:
+            return self.__class__(self.x % other, self.y % other)
+    
+    def __round__(self):
+        return self.__class__(round(self.x), round(self.y))
+    
+    def __trunc__(self):
+        return self.__class__(math.trunc(self.x), math.trunc(self.y))
 
     def __str__(self):
         return f"({self.x}, {self.y})"
 
 
 class Pos3(object):
-    def __init__(self, x=0.0, y=0.0, z=0):
+    def __init__(self, x=0, y=0, z=0):
         super(Pos3, self).__init__()
 
         self.x = x
@@ -169,6 +189,21 @@ class Pos3(object):
             return self.__class__(self.x // other.x, self.y // other.y, self.z // other.z)
         except:
             return self.__class__(self.x // other, self.y // other, self.z // other)
+        
+    def __mod__(self, other):
+        try:
+            return self.__class__(self.x % other.x, self.y % other.y, self.z % other.z)
+        except:
+            return self.__class__(self.x % other, self.y % other, self.z % other)
+    
+    def __int__(self):
+        return self.__class__(int(self.x), int(self.y), int(self.z))
+
+    def __round__(self):
+        return self.__class__(round(self.x), round(self.y), round(self.z))
+    
+    def __trunc__(self):
+        return self.__class__(math.trunc(self.x), math.trunc(self.y), math.trunc(self.z))
 
     def __str__(self):
         return f"({self.x}, {self.y}, {self.z})"

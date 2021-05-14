@@ -30,11 +30,14 @@ class Worldpos(classes.Pos3):
         super(Worldpos, self).__init__(*args, **kwargs)
     
     def to_screenpos(self, playerpos):
-        return Screenpos(self.x - playerpos.x + constants.SCREEN_WIDTH // 2, self.y - playerpos.y + constants.SCREEN_HEIGHT // 2)
+        return Screenpos.from_pos3(self - playerpos) + Screenpos.screensize() // 2
     
     def to_chunkpos(self):
         size = constants.TILE_SIZE * constants.CHUNK_SIZE
-        return Chunkpos.from_pos3(self // classes.Pos3(size, size, 1))
+        return round(Chunkpos.from_pos3(self // classes.Pos3(size, size, 1)))
+    
+    def to_tilepos(self):
+        return round(Tilepos.from_pos3(self % (constants.TILE_SIZE * constants.CHUNK_SIZE) / constants.TILE_SIZE))
 
 
 class Chunkpos(classes.Pos3):
@@ -52,3 +55,6 @@ class Tilepos(classes.Pos2):
     def __init__(self, *args, **kwargs):
         super(Tilepos, self).__init__(*args, **kwargs)
     
+    @classmethod
+    def chunksize(cls):
+        return cls(constants.CHUNK_SIZE, constants.CHUNK_SIZE)
