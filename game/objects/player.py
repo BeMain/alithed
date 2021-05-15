@@ -4,7 +4,7 @@ from pyglet.window import key
 import math
 import concurrent.futures
 
-from game import resources, constants, positions
+from game import resources, constants, positions, debug
 from game.terrain import terrain, data_handler
 from game.gui import pause
 
@@ -34,6 +34,10 @@ class Player(pyglet.sprite.Sprite):
         # Load player data
         self.load_data()
     
+    @property
+    def size(self):
+        return positions.Size2(self.width, self.height)
+
     def load_data(self):
         data = data_handler.read_player_data()
         if data:
@@ -66,56 +70,52 @@ class Player(pyglet.sprite.Sprite):
         if self.key_handler[key.DOWN] or self.key_handler[key.S]:
             dpos.y -= 1
 
-        if dpos:
-            # Normalize to avoid fast diagonal movement
-            dpos.normalize()
+        if not dpos:
+            return
             
-            speed = self.move_speed * dt
+        # Normalize to avoid fast diagonal movement
+        dpos.normalize()
+        
+        speed = self.move_speed * dt
 
-            if dpos.x:
-                # Move in x-direction
-                self.move_xory(positions.Vector2(dpos.x, 0), speed)
-            if dpos.y:
-                # Move in y-direction
-                self.move_xory(positions.Vector2(0, dpos.y), speed)
+        if dpos.x:
+            # Move in x-direction
+            self.pos += positions.Pos3.from_pos2(*self.calculate_move_xory(positions.Vector2(x=dpos.x), speed))
+        if dpos.y:
+            # Move in y-direction
+            self.pos += positions.Pos3.from_pos2(*self.calculate_move_xory(positions.Vector2(y=dpos.y), speed))
 
-            # Trigger move event
-            self.dispatch_event("on_move")
+        # Trigger move event
+        self.dispatch_event("on_move")
 
-    def move_xory(self, dpos, speed):
-        tile = self.terrain.get_tile(self.pos.x + dpos.x * (speed + self.width / 2), self.pos.y + dpos.y * (speed + self.height / 2), self.pos.z)
-        tile_b = self.terrain.get_tile(self.pos.x + dpos.x * (speed + self.width / 2), self.pos.y + dpos.y * (speed + self.height / 2), self.pos.z - 1)
 
-        if tile.material == "air":
-            if tile_b.material != "air":
-                # Normal movement
-                self.pos.x += dpos.x * speed
-                self.pos.y += dpos.y * speed
+    def calculate_move_xory(self, dpos, speed):
+        newpos = self.pos + dpos * (self.size // 2 + speed)
 
-            else:
-                # Test if we can move DOWN to the next tile
-                tile_2b = self.terrain.get_tile(self.pos.x + dpos.x * (speed + self.width / 2), self.pos.y + dpos.y * (speed + self.height / 2), self.pos.z - 2)
-                if tile_2b.material != "air":
-                    # Move down onto the next tile
-                    self.pos.x += dpos.x * speed
-                    self.pos.y += dpos.y * speed
-                    self.pos.z -= 1
-                else:
-                    # Snap to the edge of the tile
-                    self.pos.x += (abs(tile.x - self.x) - (constants.TILE_SIZE / 2) - (self.width / 2)) * dpos.x
-                    self.pos.y += (abs(tile.y - self.y) - (constants.TILE_SIZE / 2) - (self.height / 2)) * dpos.y
-        else:
+        tile = self.terrain.get_tile(*newpos.to_coords())
+
+        normal_move = dpos * speed
+        snap_move = (abs(tile.screenpos - self.screenpos) - tile.size // 2 - self.size // 2) * dpos
+
+        # Check if new pos is obstructed
+        if tile.material != "air":
             # Test if we can move UP to the next tile
-            tile_a = self.terrain.get_tile(self.pos.x + dpos.x * (speed + self.width / 2), self.pos.y + dpos.y * (speed + self.height / 2), self.pos.z + 1)
+            tile_a = self.terrain.get_tile(*(newpos + positions.Pos3(0, 0, 1)).to_coords())
             if tile_a.material == "air":
-                # Move up onto the next tile
-                self.pos.x += dpos.x * speed
-                self.pos.y += dpos.y * speed
-                self.pos.z += 1
-            else:
-                # Snap to the edge of the tile
-                self.pos.x += (abs(tile.x - self.x) - (constants.TILE_SIZE / 2) - (self.width / 2)) * dpos.x
-                self.pos.y += (abs(tile.y - self.y) - (constants.TILE_SIZE / 2) - (self.height / 2)) * dpos.y
+                return normal_move, 1
+
+            return snap_move, 0
+        
+        # Check if there is a tile below new pos
+        if self.terrain.get_tile(*(newpos - positions.Pos3(0, 0, 1)).to_coords()).material == "air":
+            # Test if we can move DOWN to the next tile
+            if self.terrain.get_tile(*(newpos - positions.Pos3(0, 0, 2)).to_coords()).material != "air":
+                return normal_move, -1
+            
+            return snap_move, 0
+        
+        # Normal movement
+        return normal_move, 0
 
 
     def handle_z_movement(self):

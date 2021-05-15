@@ -16,6 +16,14 @@ class Tile(pyglet.sprite.Sprite):
 
         self.tilepos = positions.Tilepos()
     
+    @property
+    def screenpos(self):
+        return positions.Screenpos(self.x, self.y)
+    
+    @property
+    def size(self):
+        return positions.Size2(self.width, self.height)
+
     @staticmethod
     def init_rendering(batch, group):
         Tile.BATCH = batch
@@ -57,6 +65,7 @@ class Tile(pyglet.sprite.Sprite):
         
         # Trigger update
         self.dispatch_event("on_update", self.tilepos)
+
 
     def to_data(self):
         return {
