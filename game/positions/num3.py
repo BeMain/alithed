@@ -95,8 +95,8 @@ class Num3(object):
         except: pass
         return self.__class__(self.x % other, self.y % other, self.z % other)
     
-    def __int__(self):
-        return self.__class__(int(self.x), int(self.y), int(self.z))
+    def __abs__(self):
+        return self.__class__(abs(self.x), abs(self.y), abs(self.z))
 
     def __round__(self):
         return self.__class__(round(self.x), round(self.y), round(self.z))

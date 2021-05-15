@@ -1,5 +1,6 @@
 import math
 
+from game import constants
 from game.positions import num2, num3
 
 class Pos2(num2.Num2):
@@ -35,8 +36,26 @@ class Pos3(num3.Num3):
         self.z = max(min(self.z, maxpos.z), minpos.z)
 
     @classmethod
+    def from_pos2(cls, pos2, z):
+        return cls(*pos2.to_coords(), z)
+
+    @classmethod
     def from_pos3(cls, pos3):
         return cls(*pos3.to_coords())
+
+
+class Size2(num2.Num2):
+    @property
+    def width(self):
+        return self.x
+    
+    @property
+    def height(self):
+        return self.y
+    
+    @classmethod
+    def tile_size(cls):
+        return cls(constants.TILE_SIZE, constants.TILE_SIZE)
 
 
 class Vector2(num2.Num2):    

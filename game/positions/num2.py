@@ -73,6 +73,9 @@ class Num2(object):
         except:
             return self.__class__(self.x % other, self.y % other)
     
+    def __abs__(self):
+        return self.__class__(abs(self.x), abs(self.y))
+
     def __round__(self):
         return self.__class__(round(self.x), round(self.y))
     
