@@ -76,8 +76,7 @@ class Terrain():
         def on_tile_update(self, chunkpos, tilepos):
             self.dispatch_event("on_update", chunkpos, tilepos)
 
-        def get_tile(self, x, y, z):
-            worldpos = positions.Worldpos(x, y, z)
+        def get_tile(self, worldpos):
             chunkpos = worldpos.to_chunkpos()
             tilepos = worldpos.to_tilepos()
 

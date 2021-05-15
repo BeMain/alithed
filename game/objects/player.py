@@ -92,7 +92,7 @@ class Player(pyglet.sprite.Sprite):
     def calculate_move_xory(self, dpos, speed):
         newpos = self.pos + dpos * (self.size // 2 + speed)
 
-        tile = self.terrain.get_tile(*newpos.to_coords())
+        tile = self.terrain.get_tile(newpos)
 
         normal_move = dpos * speed
         snap_move = (abs(tile.screenpos - self.screenpos) - tile.size // 2 - self.size // 2) * dpos
@@ -100,16 +100,16 @@ class Player(pyglet.sprite.Sprite):
         # Check if new pos is obstructed
         if tile.material != "air":
             # Test if we can move UP to the next tile
-            tile_a = self.terrain.get_tile(*(newpos + positions.Pos3(0, 0, 1)).to_coords())
+            tile_a = self.terrain.get_tile(newpos + positions.Pos3(0, 0, 1))
             if tile_a.material == "air":
                 return normal_move, 1
 
             return snap_move, 0
         
         # Check if there is a tile below new pos
-        if self.terrain.get_tile(*(newpos - positions.Pos3(0, 0, 1)).to_coords()).material == "air":
+        if self.terrain.get_tile(newpos - positions.Pos3(0, 0, 1)).material == "air":
             # Test if we can move DOWN to the next tile
-            if self.terrain.get_tile(*(newpos - positions.Pos3(0, 0, 2)).to_coords()).material != "air":
+            if self.terrain.get_tile(newpos - positions.Pos3(0, 0, 2)).material != "air":
                 return normal_move, -1
             
             return snap_move, 0

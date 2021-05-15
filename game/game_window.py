@@ -96,9 +96,9 @@ class GameWindow(pyglet.window.Window):
         pos = positions.Screenpos(x, y)
         pos.clamp_to_screen()
 
-        worldpos = pos.to_worldpos(self.player.pos)
+        worldpos = pos.to_worldpos(self.player.pos) 
         
-        tile = self.terrain.get_tile(worldpos.x, worldpos.y, self.player.pos.z)
+        tile = self.terrain.get_tile(worldpos)
         if tile.material == "air":
             tile.set_material("stone")
         else:
@@ -108,8 +108,6 @@ class GameWindow(pyglet.window.Window):
         # Initialization
         cursor = self.get_system_mouse_cursor(self.CURSOR_CROSSHAIR)
         self.set_mouse_cursor(cursor)
-
-
     
         # Update terrain
         self.terrain.update(self.player.pos)
