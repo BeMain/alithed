@@ -32,7 +32,6 @@ class Terrain():
             for chunk in self.chunks.values():
                 chunk.set_pos(pos)
 
-        @debug.timeit
         def load_chunks_on_screen(self, pos):
             # Get chunk positions for lower left and upper right corner corners
             corners = []
@@ -81,7 +80,14 @@ class Terrain():
             tilepos = worldpos.to_tilepos()
 
             # Make sure tilepos is within bounds
-            tilepos.loop_around(positions.Tilepos.chunksize())
+            if tilepos.x == constants.CHUNK_SIZE: 
+                tilepos.x = 0
+                chunkpos.x += 1
+            if tilepos.y == constants.CHUNK_SIZE: 
+                tilepos.y = 0
+                chunkpos.y += 1
+            print(chunkpos)
+            #tilepos.loop_around(positions.Tilepos.chunksize())
 
             try:
                 # Just grab the correct chunk
