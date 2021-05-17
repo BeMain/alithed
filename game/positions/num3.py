@@ -1,3 +1,5 @@
+import math
+
 class Num3(object):
     def __init__(self, x=0, y=0, z=0):
         super(Num3, self).__init__()
@@ -103,6 +105,12 @@ class Num3(object):
     
     def __trunc__(self):
         return self.__class__(math.trunc(self.x), math.trunc(self.y), math.trunc(self.z))
+    
+    def __floor__(self):
+        return self.__class__(math.floor(self.x), math.floor(self.y), math.floor(self.z))
+    
+    def __ceil__(self):
+        return self.__class__(math.ceil(self.x), math.ceil(self.y), math.ceil(self.z))
 
     def __str__(self):
         return f"({self.x}, {self.y}, {self.z})"
