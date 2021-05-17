@@ -51,13 +51,13 @@ class Terrain():
             # Load new chunks
             for key in new_keys:
                 if key not in self.chunks.keys():
-                    debug.log(f"loading {key}")
+                    debug.log(f"Loading chunk {key}")
                     self.load_chunk_at(positions.Chunkpos.from_str(key))
 
             # Unload old chunks
             to_remove = list(set(old_keys) - set(new_keys))
             for key in to_remove:
-                debug.log(f"unloading {key}")
+                debug.log(f"Unloading chunk {key}")
                 self.unload_chunk_at(positions.Chunkpos.from_str(key))
                             
                         
@@ -86,8 +86,6 @@ class Terrain():
             if tilepos.y == constants.CHUNK_SIZE: 
                 tilepos.y = 0
                 chunkpos.y += 1
-            print(chunkpos)
-            #tilepos.loop_around(positions.Tilepos.chunksize())
 
             try:
                 # Just grab the correct chunk
