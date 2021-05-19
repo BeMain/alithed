@@ -36,7 +36,7 @@ class Terrain():
             # Get chunk positions for lower left and upper right corner corners
             corners = []
             for rel_cords in [(-1, -1), (1, 1)]:
-                worldpos = pos + positions.Pos2.from_list(rel_cords) * positions.Screenpos.screensize() // 2
+                worldpos = pos + positions.Pos2.from_list(rel_cords) * positions.Size2.screensize() // 2
                 chunkpos = worldpos.to_chunkpos()
                 corners.append(chunkpos)
 
@@ -80,7 +80,7 @@ class Terrain():
             tilepos = worldpos.to_tilepos()
 
             # Make sure tilepos is within bounds
-            tilepos.loop_around(positions.Tilepos.chunksize())
+            tilepos.loop_around(positions.Size2.chunk_tiles())
 
             try:
                 # Just grab the correct chunk

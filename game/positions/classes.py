@@ -54,8 +54,21 @@ class Size2(num2.Num2):
         return self.y
     
     @classmethod
-    def tile_size(cls):
+    def tilesize(cls):
         return cls(constants.TILE_SIZE, constants.TILE_SIZE)
+    
+    @classmethod
+    def chunk_tiles(cls):
+        return cls(constants.CHUNK_SIZE, constants.CHUNK_SIZE)
+    
+    @classmethod
+    def chunksize(cls):
+        size = constants.TILE_SIZE * constants.CHUNK_SIZE
+        return cls(size, size)
+    
+    @classmethod
+    def screensize(cls):
+        return cls(constants.SCREEN_WIDTH, constants.SCREEN_HEIGHT)
 
 
 class Vector2(num2.Num2):    
