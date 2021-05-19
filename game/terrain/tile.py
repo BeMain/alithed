@@ -1,6 +1,6 @@
 import pyglet
 
-from game import resources, constants, style
+from game import resources, constants, style, positions
 
 class Tile(pyglet.sprite.Sprite):
     BATCH = None
@@ -14,9 +14,16 @@ class Tile(pyglet.sprite.Sprite):
         self.value = 0
         self.material = "air"
 
-        self.tile_x = 0
-        self.tile_y = 0
+        self.tilepos = positions.Tilepos()
     
+    @property
+    def screenpos(self):
+        return positions.Screenpos(self.x, self.y)
+    
+    @property
+    def size(self):
+        return positions.Size2(self.width, self.height)
+
     @staticmethod
     def init_rendering(batch, group):
         Tile.BATCH = batch
@@ -26,12 +33,11 @@ class Tile(pyglet.sprite.Sprite):
             1 : pyglet.graphics.OrderedGroup(2, parent=group),
         }
 
-    def set_pos(self, x, y, z):
-        new_x = x + self.tile_x * self.width
-        new_y = y + self.tile_y * self.height
+    def set_pos(self, screenpos, z):
+        newpos = screenpos + self.tilepos * constants.TILE_SIZE
 
         # Check bounds
-        if (new_x < -constants.TILE_SIZE // 2) or (new_x > constants.SCREEN_WIDTH + constants.TILE_SIZE // 2) or (new_y < -constants.TILE_SIZE // 2) or (new_y > constants.SCREEN_HEIGHT + constants.TILE_SIZE // 2):
+        if not newpos.is_on_screen(margin=(constants.TILE_SIZE // 2)):
             # Don't render if sprite is not on screen
             self.batch = None
 
@@ -42,8 +48,8 @@ class Tile(pyglet.sprite.Sprite):
             else:
                 self.batch = self.BATCH
 
-            self.x = new_x
-            self.y = new_y
+            self.x = newpos.x
+            self.y = newpos.y
         
             # Change appearance depending on what layer we are on
             self.group = self.GROUPS[z]
@@ -58,12 +64,12 @@ class Tile(pyglet.sprite.Sprite):
             self.batch = self.BATCH
         
         # Trigger update
-        self.dispatch_event("on_update", self.tile_x, self.tile_y)
+        self.dispatch_event("on_update", self.tilepos)
+
 
     def to_data(self):
         return {
-            "tile_x": self.tile_x,
-            "tile_y": self.tile_y,
+            "tilepos": self.tilepos.to_list(),
             "value": self.value,
             "material": self.material,
         }
@@ -72,8 +78,7 @@ class Tile(pyglet.sprite.Sprite):
     def from_data(cls, data):
         t = cls()
 
-        t.tile_x = data["tile_x"]
-        t.tile_y = data["tile_y"]
+        t.tilepos = positions.Tilepos.from_list(data["tilepos"])
 
         color = data["value"] * 255
         t.color = (color, color, color)

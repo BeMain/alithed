@@ -26,8 +26,8 @@ def clear_player_data():
 
 
 # Read chunk from disc
-def read_chunk(chunk_x, chunk_y, chunk_z):
-    path = f"{constants.CHUNKS_PATH}/{chunk_z}/{chunk_x}.{chunk_y}"
+def read_chunk(chunkpos):
+    path = f"{constants.CHUNKS_PATH}/{chunkpos.z}/{chunkpos.x}.{chunkpos.y}"
     if not os.path.exists(path):
         # If file doesn't exist, return None
         return
@@ -35,21 +35,21 @@ def read_chunk(chunk_x, chunk_y, chunk_z):
         return pickle.load(readfile)
 
 # Write chunk to disc
-def write_chunk(chunk_x, chunk_y, chunk_z, chunk):
-    if not os.path.exists(f"{constants.CHUNKS_PATH}/{chunk_z}/"):
-        os.makedirs(f"{constants.CHUNKS_PATH}/{chunk_z}/")
+def write_chunk(chunkpos, chunk):
+    if not os.path.exists(f"{constants.CHUNKS_PATH}/{chunkpos.z}/"):
+        os.makedirs(f"{constants.CHUNKS_PATH}/{chunkpos.z}/")
     
-    with open(f"{constants.CHUNKS_PATH}/{chunk_z}/{chunk_x}.{chunk_y}", "wb") as writefile:
+    with open(f"{constants.CHUNKS_PATH}/{chunkpos.z}/{chunkpos.x}.{chunkpos.y}", "wb") as writefile:
         pickle.dump(chunk, writefile)
 
 # For loading a chunk. Reads chunk if it exists, otherwise generates a new one
-def load_chunk(chunk_x, chunk_y, chunk_z):
+def load_chunk(chunkpos):
     # Load chunk from disc
-    c = read_chunk(chunk_x, chunk_y, chunk_z)
+    c = read_chunk(chunkpos)
     if not c:
         # Generate new chunk
-        c = terrain_generation.generate_chunk(chunk_x, chunk_y, chunk_z)
-        write_chunk(chunk_x, chunk_y, chunk_z, c)
+        c = terrain_generation.generate_chunk(chunkpos)
+        write_chunk(chunkpos, c)
     
     return c
 

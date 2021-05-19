@@ -2,42 +2,36 @@ import concurrent.futures
 
 import pyglet
 
-from game import debug
+from game import debug, positions, constants
 from game.terrain import data_handler, terrain_generation, terrain, tile
 
 
 class Chunk(pyglet.event.EventDispatcher):
-    def __init__(self, chunk_x, chunk_y, chunk_z, *args, **kwargs):
-        super(Chunk, self).__init__(*args, **kwargs)
+    def __init__(self, chunkpos):
+        super(Chunk, self).__init__()
         
         self.register_event_type("on_update")
 
-        self.chunk_x = chunk_x
-        self.chunk_y = chunk_y
-        self.chunk_z = chunk_z
+        self.chunkpos = chunkpos
 
         self.tiles = []
         self.load_tiles()
 
     
-    def on_tile_update(self, tile_x, tile_y):
-        self.dispatch_event("on_update", self.chunk_x, self.chunk_y, self.chunk_z, tile_x, tile_y)
+    def on_tile_update(self, tilepos):
+        self.dispatch_event("on_update", self.chunkpos, tilepos)
 
 
-    def set_pos(self, x, y, z):
-        #if z < 0:
-        #    c_above = terrain.Terrain().chunks[(self.chunk_x, self.chunk_y, self.chunk_z + 1)]
+    def set_pos(self, pos):
+        screenpos = self.chunkpos.to_screenpos(pos)
         for col in self.tiles:
             for tile in col:
-                # Don't render tile if block above
-                #if z < 0 and c_above.tiles[tile.tile_x][tile.tile_y].material != "air":
-                #    tile.batch = None
-
-                tile.set_pos(x, y, self.chunk_z - z)
+                # TODO: Don't render if block above
+                tile.set_pos(screenpos, self.chunkpos.z - pos.z)
 
     def load_tiles(self):
         # TODO: Needs optimizing
-        chunk = data_handler.load_chunk(self.chunk_x, self.chunk_y, self.chunk_z)
+        chunk = data_handler.load_chunk(self.chunkpos)
 
         # Turn the 3d-list of dicts -> 3d-list of Tiles
         self.tiles = list(map(lambda col: list(map(self.load_tile, col)), chunk))
@@ -61,4 +55,4 @@ class Chunk(pyglet.event.EventDispatcher):
 
     def save(self):
         with concurrent.futures.ThreadPoolExecutor() as executor:
-            executor.submit(data_handler.write_chunk, self.chunk_x, self.chunk_y, self.chunk_z, self.to_data())
+            executor.submit(data_handler.write_chunk, self.chunkpos, self.to_data())
