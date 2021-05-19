@@ -15,13 +15,6 @@ class Num3(object):
     @classmethod
     def from_str(cls, s):
         return cls(*eval(s))
-    
-    def to_list(self):
-        return [self.x, self.y, self.z]
-
-    @classmethod
-    def from_list(cls, lst):
-        return cls(*lst)
 
     def to_dict(self):
         return {"x": self.x, "y": self.y, "z": self.z}
@@ -52,9 +45,9 @@ class Num3(object):
         except: pass
         return self.__class__(self.x + other, self.y + other, self.z + other)
     
-    def __sub__(self, otherpos):
+    def __sub__(self, other):
         try:
-            return self.__class__(self.x - otherpos.x, self.y - otherpos.y, self.z - otherpos.z)
+            return self.__class__(self.x - other.x, self.y - other.y, self.z - other.z)
         except: pass
         try: 
             return self.__class__(self.x - other.x, self.y - other.y, self.z)

@@ -15,12 +15,7 @@ class Screenpos(classes.Pos2):
 
 
     def to_worldpos(self, playerpos):
-        return Worldpos(self.x + playerpos.x - constants.SCREEN_WIDTH // 2, self.y + playerpos.y - constants.SCREEN_HEIGHT // 2, playerpos.z)
-
-
-    @classmethod
-    def from_worldcoords(cls, x, y, playerpos):
-        return Worldpos(x, y, 0).to_screenpos(playerpos)
+        return Worldpos.from_pos3(playerpos + self - classes.Size2.screensize() // 2)
 
 
 class Worldpos(classes.Pos3):
