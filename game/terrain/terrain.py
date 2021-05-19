@@ -80,12 +80,7 @@ class Terrain():
             tilepos = worldpos.to_tilepos()
 
             # Make sure tilepos is within bounds
-            if tilepos.x == constants.CHUNK_SIZE: 
-                tilepos.x = 0
-                chunkpos.x += 1
-            if tilepos.y == constants.CHUNK_SIZE: 
-                tilepos.y = 0
-                chunkpos.y += 1
+            tilepos.loop_around(positions.Tilepos.chunksize())
 
             try:
                 # Just grab the correct chunk

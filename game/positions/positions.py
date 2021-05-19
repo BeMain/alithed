@@ -35,7 +35,7 @@ class Worldpos(classes.Pos3):
     
     def to_chunkpos(self):
         size = constants.TILE_SIZE * constants.CHUNK_SIZE
-        return round(Chunkpos.from_pos3(self // classes.Size2(size, size)))
+        return round(Chunkpos.from_pos3((self + classes.Size2.tile_size() // 2) // classes.Size2(size, size)))
     
     def to_tilepos(self):
         return round(Tilepos.from_pos3(self % (constants.TILE_SIZE * constants.CHUNK_SIZE) / constants.TILE_SIZE))
