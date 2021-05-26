@@ -59,17 +59,13 @@ class Player(pyglet.sprite.Sprite):
 
         
     def handle_xy_movement(self, dt):
-        # Handle movement
-        dpos = positions.Vector2(0,0)
-        if self.key_handler[key.RIGHT] or self.key_handler[key.D]:
-            dpos.x += 1
-        if self.key_handler[key.LEFT] or self.key_handler[key.A]:
-            dpos.x -= 1
-        if self.key_handler[key.UP] or self.key_handler[key.W]:
-            dpos.y += 1
-        if self.key_handler[key.DOWN] or self.key_handler[key.S]:
-            dpos.y -= 1
-
+        right = self.key_handler[key.RIGHT] or self.key_handler[key.D]
+        left = self.key_handler[key.LEFT] or self.key_handler[key.A]
+        up =  self.key_handler[key.UP] or self.key_handler[key.W]
+        down = self.key_handler[key.DOWN] or self.key_handler[key.S]
+        
+        dpos = positions.Vector2(int(right) - int(left), int(up) - int(down))
+        
         if not dpos:
             return
             
