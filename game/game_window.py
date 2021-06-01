@@ -7,8 +7,8 @@ import time
 import math
 
 from game import constants, resources, positions, debug
+from game.terrain import terrain, Tile
 from game.objects import player
-from game.terrain import terrain, tile, data_handler
 from game.gui import pause
 from game.gui.handler import GuiHandler
 
@@ -30,7 +30,6 @@ class GameWindow(pyglet.window.Window):
 
         # Objects
         self.gui = GuiHandler(self, batch=self.gui_batch)
-        self.terrain = terrain.Terrain()
         self.player = player.Player(batch=self.main_batch, group=self.objects_group)
         self.fps_display = self.init_fps_display()
 
@@ -40,10 +39,10 @@ class GameWindow(pyglet.window.Window):
         # Register event handlers
         self.push_handlers(*self.game_obj_event_handlers)
         
-        self.terrain.push_handlers(on_update=self.on_tile_update)
+        terrain.push_handlers(on_update=self.on_tile_update)
 
         # Init tile.Tile so they can render properly
-        tile.Tile.init_rendering(self.main_batch, self.main_group)
+        Tile.init_rendering(self.main_batch, self.main_group)
 
     def init_fps_display(self):
         display = pyglet.window.FPSDisplay(self)
@@ -73,7 +72,7 @@ class GameWindow(pyglet.window.Window):
 
 
     def on_tile_update(self, chunkpos, tilepos):
-        self.terrain.update(self.player.pos)
+        terrain.update(self.player.pos)
 
 
     def on_key_press(self, symbol, modifiers):
@@ -98,7 +97,7 @@ class GameWindow(pyglet.window.Window):
 
         worldpos = pos.to_worldpos(self.player.pos) 
         
-        tile = self.terrain.get_tile(worldpos)
+        tile = terrain.get_tile(worldpos)
         if tile.material == "air":
             tile.set_material("stone")
         else:
@@ -110,7 +109,7 @@ class GameWindow(pyglet.window.Window):
         self.set_mouse_cursor(cursor)
     
         # Update terrain
-        self.terrain.update(self.player.pos)
+        terrain.update(self.player.pos)
 
         self.last_scheduled_update = time.time()
 
@@ -128,8 +127,8 @@ class GameWindow(pyglet.window.Window):
         
     def exit(self):
         # Save chunks
-        for k in self.terrain.chunks:
-            self.terrain.chunks[k].save()
+        for k in terrain.chunks:
+            terrain.chunks[k].save()
             
         # Save player
         self.player.save()

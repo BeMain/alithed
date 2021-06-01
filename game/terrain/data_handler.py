@@ -3,7 +3,7 @@ import os
 import shutil
 
 from game import constants
-from game.terrain import terrain_generation
+from .terrain_generation import generate_chunk
 
 
 # Player
@@ -48,7 +48,7 @@ def load_chunk(chunkpos):
     c = read_chunk(chunkpos)
     if not c:
         # Generate new chunk
-        c = terrain_generation.generate_chunk(chunkpos)
+        c = generate_chunk(chunkpos)
         write_chunk(chunkpos, c)
     
     return c

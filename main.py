@@ -1,5 +1,4 @@
 from game import game_window, debug, positions
-from game.terrain import data_handler
 
 
 if __name__ == "__main__":
