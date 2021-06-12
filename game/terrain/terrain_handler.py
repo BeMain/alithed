@@ -48,13 +48,13 @@ class Terrain(pyglet.event.EventDispatcher):
         # Load new chunks
         for key in new_keys:
             if key not in self.chunks.keys():
-                debug.log(f"Loading chunk {key}")
+                debug.log(f"Loading chunk {key}", priority=3)
                 self.load_chunk_at(positions.Chunkpos.from_str(key))
 
         # Unload old chunks
         to_remove = list(set(old_keys) - set(new_keys))
         for key in to_remove:
-            debug.log(f"Unloading chunk {key}")
+            debug.log(f"Unloading chunk {key}", priority=3)
             self.unload_chunk_at(positions.Chunkpos.from_str(key))
                         
                     

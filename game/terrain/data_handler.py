@@ -2,7 +2,7 @@ import pickle, json
 import os
 import shutil
 
-from game import constants
+from game import constants, debug
 from .terrain_generation import generate_chunk
 
 
@@ -20,7 +20,7 @@ def write_player_data(data):
         json.dump(data, writefile)
 
 def clear_player_data():
-    print("Clearing player data")
+    debug.log("Clearing player data", priority=2)
     if os.path.exists(constants.PLAYER_DATA_PATH):
         os.remove(constants.PLAYER_DATA_PATH)
 
@@ -55,6 +55,6 @@ def load_chunk(chunkpos):
 
 # Remove all chunks
 def clear_chunks():
-    print("Clearing chunks")
+    debug.log("Clearing chunks", priority=2)
     if os.path.exists(constants.CHUNKS_PATH):
         shutil.rmtree(constants.CHUNKS_PATH)
