@@ -12,7 +12,6 @@ freq = Pos3(2, 2, 4)
 
 noise = fns.Noise(seed=constants.SEED, numWorkers=4)
 
-@debug.timeit
 def generate_chunk(chunkpos):
     global noise
     global threshold
@@ -26,12 +25,10 @@ def generate_chunk(chunkpos):
     tiles = []
 
     for x in range(constants.CHUNK_SIZE):
-        col = []
         for y in range(constants.CHUNK_SIZE):
-            col.append(_tile(pixels[x * freq.x, y * freq.y], x, y))
-        tiles.append(col)
+            tiles.append(_tile(pixels[x * freq.x, y * freq.y], x, y))
 
-    return tiles
+    return np.array(tiles)
 
 
 def _tile(pixel, x, y):

@@ -1,15 +1,11 @@
-from perlin_noise import PerlinNoise
-import pyfastnoisesimd as fns
+import numpy as np
 
 from game import debug
+from game.positions import Tilepos
 
 
-@debug.timeit
-def gen_fastnoise(n):
-    shape = [1, n, n]
-    
-    noise = fns.Noise(seed=100, numWorkers=4)
-    return noise.genAsGrid(shape=shape, start=[0,0,0])
 
-print(gen_fastnoise(4))
-print(gen_fastnoise(16) + 1)
+arr = np.array([[[1, 2], [3, 4]], [[5, 6], [7, 8]]])
+
+for x in np.nditer(arr):
+  print(x)

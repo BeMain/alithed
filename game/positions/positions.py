@@ -47,3 +47,9 @@ class Tilepos(classes.Pos2):
     def __init__(self, *args, **kwargs):
         super(Tilepos, self).__init__(*args, **kwargs)
     
+    @classmethod
+    def from_index(cls, idx):
+        return cls(idx // constants.CHUNK_SIZE, idx % constants.CHUNK_SIZE)
+    
+    def to_index(self):
+        return self.y + self.x * constants.CHUNK_SIZE

@@ -86,5 +86,5 @@ class Terrain(pyglet.event.EventDispatcher):
             # Load the chunk from memory
             c = Chunk(chunkpos)
         
-        tile = c.tiles[tilepos.x][tilepos.y]
+        tile = c.get_tile(tilepos)
         return tile
