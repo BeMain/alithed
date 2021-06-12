@@ -41,7 +41,7 @@ class GameWindow(pyglet.window.Window):
         
         terrain.push_handlers(on_update=self.on_tile_update)
 
-        # Init tile.Tile so they can render properly
+        # Init Tile so they can render properly
         Tile.init_rendering(self.main_batch, self.main_group)
 
     def init_fps_display(self):
@@ -55,18 +55,15 @@ class GameWindow(pyglet.window.Window):
 
         # Draw background
         resources.background_image.blit(0,0)
-
         # Draw objects
         self.main_batch.draw()
-        self.fps_display.draw()
-
         self.gui_batch.draw()
+        self.fps_display.draw()
 
         self.flip()
 
     @pause.pausable
     def update(self, dt):
-        # Update all objects
         for obj in self.game_objects:
             obj.update(dt)
 
@@ -76,18 +73,16 @@ class GameWindow(pyglet.window.Window):
 
 
     def on_key_press(self, symbol, modifiers):
-        if symbol == key.ESCAPE:
-            # Exit the game
+        if symbol == key.ESCAPE:    # Exit
             self.exit()
         
-        elif symbol == key.P:
-            # Pause the game
+        elif symbol == key.P:       # Menu
             if self.gui.menus:
                 self.gui.close_menus()
             else:
                 self.gui.open_main_menu()
         
-        elif symbol == key.I:
+        elif symbol == key.I:       # Inventory
             self.gui.inventory.toggle()
 
     @pause.pausable
@@ -110,7 +105,6 @@ class GameWindow(pyglet.window.Window):
     
         # Update terrain
         terrain.update(self.player.pos)
-
         self.last_scheduled_update = time.time()
 
         # Main loop

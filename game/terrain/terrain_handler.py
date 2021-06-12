@@ -23,11 +23,11 @@ class Terrain(pyglet.event.EventDispatcher):
     def update(self, playerpos):
         self.set_pos(playerpos)
 
-    def set_pos(self, pos):
-        self.load_chunks_on_screen(pos)
+    def set_pos(self, playerpos):
+        self.load_chunks_on_screen(playerpos)
 
         for chunk in self.chunks.values():
-            chunk.set_pos(pos)
+            chunk.set_pos(playerpos)
 
     def load_chunks_on_screen(self, pos):
         # Get chunk positions for lower left and upper right corner corners
@@ -64,7 +64,6 @@ class Terrain(pyglet.event.EventDispatcher):
         self.chunks[str(chunkpos)] = chunk
 
     def unload_chunk_at(self, chunkpos):
-        self.chunks[str(chunkpos)].save()
         self.chunks[str(chunkpos)].delete()
         del self.chunks[str(chunkpos)]
 
@@ -79,11 +78,9 @@ class Terrain(pyglet.event.EventDispatcher):
         # Make sure tilepos is within bounds
         tilepos.loop_around(positions.Size2.chunk_tiles())
 
-        try:
-            # Just grab the correct chunk
+        try:        # Just grab the correct chunk
             chunk = self.chunks[str(chunkpos)]
-        except:
-            # Load the chunk from memory
+        except:     # Load the chunk from memory
             chunk = Chunk(chunkpos)
         
         tile = chunk.get_tile(tilepos)

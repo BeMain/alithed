@@ -12,8 +12,8 @@ def log(data, priority = 0):
         print(data)
 
 
-# Decorator for timing functions
 def timeit(func):
+    """Decorator for timing functions"""
     @functools.wraps(func)
     def wrapper(*args, **kwargs):
         start = time.time()

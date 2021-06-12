@@ -41,7 +41,7 @@ class Tile(pyglet.sprite.Sprite):
 
         else:
             if self.material == "air":
-                # Air shouldn't be rendered
+                # Don't render air
                 self.batch = None
             else:
                 self.batch = self.BATCH

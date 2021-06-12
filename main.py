@@ -3,11 +3,11 @@ from game.terrain import data_handler
 
 
 if __name__ == "__main__":
-    # Enable some debugging functions
+    # Enable debugging functions
     if debug.CLEAR_WORLD_ON_STARTUP:
         data_handler.clear_chunks()
         data_handler.clear_player_data()
 
-    # Start the application
+    # Start application
     window = game_window.GameWindow()
     window.run()
