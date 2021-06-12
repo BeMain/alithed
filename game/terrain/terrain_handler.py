@@ -59,8 +59,8 @@ class Terrain(pyglet.event.EventDispatcher):
                         
                     
     def load_chunk_at(self, chunkpos):
-        c = Chunk(chunkpos)
-        c.push_handlers(on_update=self.on_tile_update)
+        chunk = Chunk(chunkpos)
+        chunk.push_handlers(on_update=self.on_tile_update)
         self.chunks[str(chunkpos)] = c
 
     def unload_chunk_at(self, chunkpos):
@@ -81,10 +81,10 @@ class Terrain(pyglet.event.EventDispatcher):
 
         try:
             # Just grab the correct chunk
-            c = self.chunks[str(chunkpos)]
+            chunk = self.chunks[str(chunkpos)]
         except:
             # Load the chunk from memory
-            c = Chunk(chunkpos)
+            chunk = Chunk(chunkpos)
         
-        tile = c.get_tile(tilepos)
+        tile = chunk.get_tile(tilepos)
         return tile

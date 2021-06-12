@@ -45,13 +45,13 @@ def write_chunk(chunkpos, chunk):
 # For loading a chunk. Reads chunk if it exists, otherwise generates a new one
 def load_chunk(chunkpos):
     # Load chunk from disc
-    c = read_chunk(chunkpos)
-    if not c:
+    chunk = read_chunk(chunkpos)
+    if not chunk:
         # Generate new chunk
-        c = generate_chunk(chunkpos)
-        write_chunk(chunkpos, c)
+        chunk = generate_chunk(chunkpos)
+        write_chunk(chunkpos, chunk)
     
-    return c
+    return chunk
 
 # Remove all chunks
 def clear_chunks():

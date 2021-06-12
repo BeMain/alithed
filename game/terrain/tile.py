@@ -76,14 +76,14 @@ class Tile(pyglet.sprite.Sprite):
 
     @classmethod
     def from_data(cls, data):
-        t = cls()
+        tile = cls()
 
-        t.tilepos = positions.Tilepos.from_list(data["tilepos"])
+        tile.tilepos = positions.Tilepos.from_list(data["tilepos"])
 
         color = data["value"] * 255
-        t.color = (color, color, color)
-        t.value = data["value"]
+        tile.color = (color, color, color)
+        tile.value = data["value"]
         
-        t.material = data["material"]
+        tile.material = data["material"]
 
-        return t
+        return tile
