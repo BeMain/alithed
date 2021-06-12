@@ -48,7 +48,6 @@ def load_chunk(chunkpos):
     if not chunk:
         # Generate new chunk
         chunk = generate_chunk(chunkpos)
-        write_chunk(chunkpos, chunk)
     
     return chunk
 
