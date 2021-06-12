@@ -33,6 +33,5 @@ def generate_chunk(chunkpos):
 
 def _tile(pixel, x, y):
     return {
-        "value": pixel,
         "material": ("stone" if pixel >= threshold else "air"),
     }

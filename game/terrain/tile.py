@@ -6,14 +6,12 @@ class Tile(pyglet.sprite.Sprite):
     BATCH = None
     GROUPS = {}
 
-    def __init__(self, tilepos, *args, value=0, material="air", **kwargs):
+    def __init__(self, tilepos, *args, material="air", **kwargs):
         super(Tile, self).__init__(img=resources.tiles[0], usage="static", *args, **kwargs)
 
         self.register_event_type("on_update")
 
-        self.value = value
         self.material = material
-
         self.tilepos = tilepos
     
     @property
@@ -69,10 +67,9 @@ class Tile(pyglet.sprite.Sprite):
 
     def to_data(self):
         return {
-            "value": self.value,
             "material": self.material,
         }
 
     @classmethod
     def from_data(cls, data, idx):
-        return cls(positions.Tilepos.from_index(idx), value=data["value"], material=data["material"])
+        return cls(positions.Tilepos.from_index(idx), material=data["material"])
