@@ -61,7 +61,7 @@ class Terrain(pyglet.event.EventDispatcher):
     def load_chunk_at(self, chunkpos):
         chunk = Chunk(chunkpos)
         chunk.push_handlers(on_update=self.on_tile_update)
-        self.chunks[str(chunkpos)] = c
+        self.chunks[str(chunkpos)] = chunk
 
     def unload_chunk_at(self, chunkpos):
         self.chunks[str(chunkpos)].save()

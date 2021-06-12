@@ -39,10 +39,10 @@ class Chunk(pyglet.event.EventDispatcher):
         chunk = data_handler.load_chunk(self.chunkpos)
 
         # Turn the 3d-list of dicts -> 3d-list of Tiles
-        self.tiles = np.array([self._load_tile(tile) for tile in chunk])
+        self.tiles = np.array([self._load_tile(tile, idx) for idx, tile in enumerate(chunk)])
 
-    def _load_tile(self, t_data):
-        tile = Tile.from_data(t_data)
+    def _load_tile(self, *args):
+        tile = Tile.from_data(*args)
         tile.push_handlers(on_update=self.on_tile_update)
         return tile
 

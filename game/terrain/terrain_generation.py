@@ -35,5 +35,4 @@ def _tile(pixel, x, y):
     return {
         "value": pixel,
         "material": ("stone" if pixel >= threshold else "air"),
-        "tilepos": [x,y]
     }
