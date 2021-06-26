@@ -16,7 +16,6 @@ class Chunk(pyglet.event.EventDispatcher):
         self.chunkpos = chunkpos
 
         self.tiles = []
-        self.load_tiles()
 
     
     def on_tile_update(self, tilepos):
@@ -30,7 +29,7 @@ class Chunk(pyglet.event.EventDispatcher):
                 # TODO: Don't render if block above
                 t.set_pos(screenpos, self.chunkpos.z - pos.z)
 
-    def load_tiles(self):
+    async def load_tiles(self):
         # TODO: Needs optimizing
         chunk = load_chunk(self.chunkpos)
 

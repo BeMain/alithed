@@ -2,6 +2,7 @@ import math
 import numpy as np
 import time
 import itertools
+import asyncio
 
 import pyglet
 from pyglet.window import key
@@ -45,11 +46,7 @@ class Terrain(pyglet.event.EventDispatcher):
                 for z in range(pos.z - 1, pos.z + 2):
                     new_keys.append(str((x, y, z)))
 
-        # Load new chunks
-        for key in new_keys:
-            if key not in self.chunks.keys():
-                debug.log(f"Loading chunk {key}")
-                self.load_chunk_at(positions.Chunkpos.from_str(key))
+        asyncio.run(self.load_chunks(new_keys))
 
         # Unload old chunks
         to_remove = list(set(old_keys) - set(new_keys))
@@ -57,11 +54,17 @@ class Terrain(pyglet.event.EventDispatcher):
             debug.log(f"Unloading chunk {key}")
             self.unload_chunk_at(positions.Chunkpos.from_str(key))
                         
-                    
-    def load_chunk_at(self, chunkpos):
-        c = Chunk(chunkpos)
-        c.push_handlers(on_update=self.on_tile_update)
-        self.chunks[str(chunkpos)] = c
+    async def load_chunks(self, keys):
+        asyncio.gather(*(self.load_chunk(key) for key in keys))
+
+    async def load_chunk(self, key):
+        # Load new chunk
+        if key not in self.chunks.keys():
+            debug.log(f"Loading chunk {key}")
+            c = Chunk(positions.Chunkpos.from_str(key))
+            await c.load_tiles()
+            c.push_handlers(on_update=self.on_tile_update)
+            self.chunks[str(key)] = c
 
     def unload_chunk_at(self, chunkpos):
         self.chunks[str(chunkpos)].save()
@@ -85,6 +88,7 @@ class Terrain(pyglet.event.EventDispatcher):
         except:
             # Load the chunk from memory
             c = Chunk(chunkpos)
+            asyncio.run(c.load_tiles())
         
         tile = c.tiles[tilepos.x][tilepos.y]
         return tile
