@@ -1,4 +1,5 @@
 import concurrent.futures
+import asyncio
 
 import pyglet
 
@@ -31,7 +32,7 @@ class Chunk(pyglet.event.EventDispatcher):
 
     async def load_tiles(self):
         # TODO: Needs optimizing
-        chunk = load_chunk(self.chunkpos)
+        chunk = await load_chunk(self.chunkpos)
 
         # Turn the 3d-list of dicts -> 3d-list of Tiles
         self.tiles = list(map(lambda col: list(map(self.load_tile, col)), chunk))
@@ -54,5 +55,4 @@ class Chunk(pyglet.event.EventDispatcher):
             debug.log("Error deleting chunk")
 
     def save(self):
-        with concurrent.futures.ThreadPoolExecutor() as executor:
-            executor.submit(write_chunk, self.chunkpos, self.to_data())
+        asyncio.run(write_chunk(self.chunkpos, self.to_data()))

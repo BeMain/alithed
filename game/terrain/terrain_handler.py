@@ -53,18 +53,17 @@ class Terrain(pyglet.event.EventDispatcher):
         for key in to_remove:
             debug.log(f"Unloading chunk {key}")
             self.unload_chunk_at(positions.Chunkpos.from_str(key))
-                        
-    async def load_chunks(self, keys):
-        asyncio.gather(*(self.load_chunk(key) for key in keys))
+                    
 
-    async def load_chunk(self, key):
+    async def load_chunks(self, keys):
         # Load new chunk
-        if key not in self.chunks.keys():
-            debug.log(f"Loading chunk {key}")
-            c = Chunk(positions.Chunkpos.from_str(key))
-            await c.load_tiles()
-            c.push_handlers(on_update=self.on_tile_update)
-            self.chunks[str(key)] = c
+        for key in keys:
+            if key not in self.chunks.keys():
+                debug.log(f"Loading chunk {key}")
+                c = Chunk(positions.Chunkpos.from_str(key))
+                await c.load_tiles()
+                c.push_handlers(on_update=self.on_tile_update)
+                self.chunks[str(key)] = c
 
     def unload_chunk_at(self, chunkpos):
         self.chunks[str(chunkpos)].save()

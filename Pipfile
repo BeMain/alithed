@@ -8,6 +8,7 @@ pyglet = "*"
 glooey = "*"
 perlin-noise = "*"
 numpy = "*"
+aiofiles = "*"
 
 [dev-packages]
 
