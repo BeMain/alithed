@@ -1,5 +1,4 @@
 import numpy as np
-from perlin_noise import PerlinNoise
 import pyfastnoisesimd as fns
 
 from game import constants, debug

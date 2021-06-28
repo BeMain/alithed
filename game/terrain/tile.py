@@ -1,6 +1,7 @@
 import pyglet
 
-from game import resources, constants, style, positions
+from game import resources, constants, style
+from game.positions import Screenpos, Size2, Tilepos
 
 class Tile(pyglet.sprite.Sprite):
     BATCH = None
@@ -16,11 +17,11 @@ class Tile(pyglet.sprite.Sprite):
     
     @property
     def screenpos(self):
-        return positions.Screenpos(self.x, self.y)
+        return Screenpos(self.x, self.y)
     
     @property
     def size(self):
-        return positions.Size2(self.width, self.height)
+        return Size2(self.width, self.height)
 
     @staticmethod
     def init_rendering(batch, group):
@@ -72,4 +73,4 @@ class Tile(pyglet.sprite.Sprite):
 
     @classmethod
     def from_data(cls, data, idx):
-        return cls(positions.Tilepos.from_index(idx), material=data["material"])
+        return cls(Tilepos.from_index(idx), material=data["material"])

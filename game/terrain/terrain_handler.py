@@ -30,7 +30,7 @@ class Terrain(pyglet.event.EventDispatcher):
             chunk.set_pos(playerpos)
 
     def load_chunks_on_screen(self, pos):
-        # Get chunk positions for lower left and upper right corner corners
+        # Get chunk positions for lower left and upper right corner
         corners = []
         for rel_cords in [(-1, -1), (1, 1)]:
             worldpos = pos + positions.Pos2.from_list(rel_cords) * positions.Size2.screensize() // 2

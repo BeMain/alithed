@@ -43,10 +43,8 @@ def write_chunk(chunkpos, chunk):
 
 def load_chunk(chunkpos):
     """Reads chunk from disk if it exists, otherwise generate a new one"""
-    # Load chunk from disc
     chunk = read_chunk(chunkpos)
     if not chunk:
-        # Generate new chunk
         chunk = generate_chunk(chunkpos)
     
     return chunk
