@@ -1,9 +1,12 @@
 import concurrent.futures
+import numpy as np
 
 import pyglet
 
-from game import debug, positions, constants
-from game.terrain import data_handler, terrain_generation, terrain, tile
+from game import debug, constants
+from game.positions import Size2
+from game.terrain import data_handler
+from .tile import Tile
 
 
 class Chunk(pyglet.event.EventDispatcher):
@@ -14,44 +17,45 @@ class Chunk(pyglet.event.EventDispatcher):
 
         self.chunkpos = chunkpos
 
-        self.tiles = []
-        self.load_tiles()
+        self.tiles = np.zeros(constants.CHUNK_SIZE ** 2)
+        self._load_tiles()
 
-    
+    def _load_tiles(self):
+        chunk = data_handler.load_chunk(self.chunkpos)
+        # Turn the array of dicts -> array of Tiles
+        self.tiles = np.array([self._load_tile(tile, idx) for idx, tile in enumerate(chunk)])
+
+    def _load_tile(self, *args):
+        tile = Tile.from_data(*args)
+        tile.push_handlers(on_update=self.on_tile_update)
+        return tile
+
+
     def on_tile_update(self, tilepos):
         self.dispatch_event("on_update", self.chunkpos, tilepos)
 
 
-    def set_pos(self, pos):
-        screenpos = self.chunkpos.to_screenpos(pos)
-        for col in self.tiles:
-            for tile in col:
-                # TODO: Don't render if block above
-                tile.set_pos(screenpos, self.chunkpos.z - pos.z)
+    def get_tile(self, tilepos):
+        return self.tiles[tilepos.to_index()]
 
-    def load_tiles(self):
-        # TODO: Needs optimizing
-        chunk = data_handler.load_chunk(self.chunkpos)
-
-        # Turn the 3d-list of dicts -> 3d-list of Tiles
-        self.tiles = list(map(lambda col: list(map(self.load_tile, col)), chunk))
-
-    def load_tile(self, t_data):
-        t = tile.Tile.from_data(t_data)
-        t.push_handlers(on_update=self.on_tile_update)
-        return t
+    def set_pos(self, playerpos):
+        screenpos = self.chunkpos.to_screenpos(playerpos)
+        for tile in self.tiles:
+            # TODO: Don't render if block above
+            tile.set_pos(screenpos, self.chunkpos.z - playerpos.z)
+    
 
     def to_data(self):
-        return list(map(lambda col: list(map(lambda tile: tile.to_data(), col)), self.tiles))
+        return [tile.to_data() for tile in self.tiles]
 
     def delete(self):
-        try:
-            for col in self.tiles:
-                for tile in col:
-                    if tile:
-                        tile.delete()
+        self.save()
+
+        try:    # Delete tiles
+            for tile in self.tiles:
+                tile.delete()
         except:
-            debug.log("Error deleting chunk")
+            debug.log("Error deleting tiles", priority=1)
 
     def save(self):
         with concurrent.futures.ThreadPoolExecutor() as executor:
