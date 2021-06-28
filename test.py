@@ -1,8 +1,11 @@
-from game import items, game_window
-from game.terrain import terrain
+import numpy as np
+
+from game import debug
+from game.positions import Tilepos
 
 
 
-t = terrain.Terrain()
+arr = np.array([[[1, 2], [3, 4]], [[5, 6], [7, 8]]])
 
-t.update(0,0,0)
+for x in np.nditer(arr):
+  print(x)

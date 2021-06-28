@@ -24,14 +24,14 @@ class Terrain(pyglet.event.EventDispatcher):
     def update(self, playerpos):
         self.set_pos(playerpos)
 
-    def set_pos(self, pos):
-        self.load_chunks_on_screen(pos)
+    def set_pos(self, playerpos):
+        self.load_chunks_on_screen(playerpos)
 
         for chunk in self.chunks.values():
-            chunk.set_pos(pos)
+            chunk.set_pos(playerpos)
 
     def load_chunks_on_screen(self, pos):
-        # Get chunk positions for lower left and upper right corner corners
+        # Get chunk positions for lower left and upper right corner
         corners = []
         for rel_cords in [(-1, -1), (1, 1)]:
             worldpos = pos + positions.Pos2.from_list(rel_cords) * positions.Size2.screensize() // 2
@@ -51,7 +51,7 @@ class Terrain(pyglet.event.EventDispatcher):
         # Unload old chunks
         to_remove = list(set(old_keys) - set(new_keys))
         for key in to_remove:
-            debug.log(f"Unloading chunk {key}")
+            debug.log(f"Unloading chunk {key}", priority=3)
             self.unload_chunk_at(positions.Chunkpos.from_str(key))
                     
 
@@ -59,15 +59,14 @@ class Terrain(pyglet.event.EventDispatcher):
         # Load new chunk
         for key in keys:
             if key not in self.chunks.keys():
-                debug.log(f"Loading chunk {key}")
-                c = Chunk(positions.Chunkpos.from_str(key))
-                await c.load_tiles()
-                await c.activate()
-                c.push_handlers(on_update=self.on_tile_update)
-                self.chunks[str(key)] = c
+                debug.log(f"Loading chunk {key}", priority=3)
+                chunk = Chunk(positions.Chunkpos.from_str(key))
+                await chunk.load_tiles()
+                await chunk.activate()
+                chunk.push_handlers(on_update=self.on_tile_update)
+                self.chunks[str(key)] = chunk
 
     def unload_chunk_at(self, chunkpos):
-        self.chunks[str(chunkpos)].save()
         self.chunks[str(chunkpos)].delete()
         del self.chunks[str(chunkpos)]
 
@@ -82,14 +81,11 @@ class Terrain(pyglet.event.EventDispatcher):
         # Make sure tilepos is within bounds
         tilepos.loop_around(positions.Size2.chunk_tiles())
 
-        try:
-            # Just grab the correct chunk
-            c = self.chunks[str(chunkpos)]
-        except:
-            # Load the chunk from memory
-            c = Chunk(chunkpos)
-
-            asyncio.run(c.activate())
+        try:        # Just grab the correct chunk
+            chunk = self.chunks[str(chunkpos)]
+        except:     # Load the chunk from memory
+            chunk = Chunk(chunkpos)
+            asyncio.run(chunk.activate())
         
-        tile = c.tiles[tilepos.x][tilepos.y]
+        tile = chunk.get_tile(tilepos)
         return tile

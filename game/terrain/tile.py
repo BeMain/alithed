@@ -1,28 +1,27 @@
 import pyglet
 
-from game import resources, constants, style, positions
+from game import resources, constants, style
+from game.positions import Screenpos, Size2, Tilepos
 
 class Tile(pyglet.sprite.Sprite):
     BATCH = None
     GROUPS = {}
 
-    def __init__(self, *args, **kwargs):
+    def __init__(self, tilepos, *args, material="air", **kwargs):
         super(Tile, self).__init__(img=resources.tiles[0], usage="static", *args, **kwargs)
 
         self.register_event_type("on_update")
 
-        self.value = 0
-        self.material = "air"
-
-        self.tilepos = positions.Tilepos()
+        self.material = material
+        self.tilepos = tilepos
     
     @property
     def screenpos(self):
-        return positions.Screenpos(self.x, self.y)
+        return Screenpos(self.x, self.y)
     
     @property
     def size(self):
-        return positions.Size2(self.width, self.height)
+        return Size2(self.width, self.height)
 
     @staticmethod
     def init_rendering(batch, group):
@@ -43,7 +42,7 @@ class Tile(pyglet.sprite.Sprite):
 
         else:
             if self.material == "air":
-                # Air shouldn't be rendered
+                # Don't render air
                 self.batch = None
             else:
                 self.batch = self.BATCH
@@ -69,21 +68,9 @@ class Tile(pyglet.sprite.Sprite):
 
     def to_data(self):
         return {
-            "tilepos": self.tilepos.to_list(),
-            "value": self.value,
             "material": self.material,
         }
 
     @classmethod
-    def from_data(cls, data):
-        t = cls()
-
-        t.tilepos = positions.Tilepos.from_list(data["tilepos"])
-
-        color = data["value"] * 255
-        t.color = (color, color, color)
-        t.value = data["value"]
-        
-        t.material = data["material"]
-
-        return t
+    def from_data(cls, data, idx):
+        return cls(Tilepos.from_index(idx), material=data["material"])

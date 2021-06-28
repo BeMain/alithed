@@ -1,10 +1,12 @@
 import concurrent.futures
 import asyncio
+import numpy as np
 
 import pyglet
 
-from game import debug, positions, constants
-from .data_handler import load_chunk, write_chunk
+from game import debug, constants
+from game.positions import Size2
+from game.terrain import data_handler
 from .tile import Tile
 
 
@@ -16,24 +18,11 @@ class Chunk(pyglet.event.EventDispatcher):
 
         self.chunkpos = chunkpos
 
-        self.tiles = []
-
+        self.tiles = np.zeros(constants.CHUNK_SIZE ** 2)
         self.task = None
 
-    
-    def on_tile_update(self, tilepos):
-        self.dispatch_event("on_update", self.chunkpos, tilepos)
-
-
-    def set_pos(self, pos):
-        screenpos = self.chunkpos.to_screenpos(pos)
-        for col in self.tiles:
-            for t in col:
-                # TODO: Don't render if block above
-                t.set_pos(screenpos, self.chunkpos.z - pos.z)
-
     async def load_tiles(self):
-        self.task = asyncio.create_task(load_chunk(self.chunkpos))
+        self.task = asyncio.create_task(data_handler.load_chunk(self.chunkpos))
         await asyncio.sleep(0)
 
     async def activate(self):
@@ -41,25 +30,40 @@ class Chunk(pyglet.event.EventDispatcher):
             await self.load_tiles()
         chunk = await self.task
 
-        # Turn the 3d-list of dicts -> 3d-list of Tiles
-        self.tiles = list(map(lambda col: list(map(self.load_tile, col)), chunk))
+        # Turn the array of dicts -> array of Tiles
+        self.tiles = np.array([self._load_tile(tile, idx) for idx, tile in enumerate(chunk)])
 
-    def load_tile(self, t_data):
-        t = Tile.from_data(t_data)
-        t.push_handlers(on_update=self.on_tile_update)
-        return t
+    def _load_tile(self, *args):
+        tile = Tile.from_data(*args)
+        tile.push_handlers(on_update=self.on_tile_update)
+        return tile
+
+
+    def on_tile_update(self, tilepos):
+        self.dispatch_event("on_update", self.chunkpos, tilepos)
+
+
+    def get_tile(self, tilepos):
+        return self.tiles[tilepos.to_index()]
+
+    def set_pos(self, playerpos):
+        screenpos = self.chunkpos.to_screenpos(playerpos)
+        for tile in self.tiles:
+            # TODO: Don't render if block above
+            tile.set_pos(screenpos, self.chunkpos.z - playerpos.z)
+    
 
     def to_data(self):
-        return list(map(lambda col: list(map(lambda t: t.to_data(), col)), self.tiles))
+        return [tile.to_data() for tile in self.tiles]
 
     def delete(self):
-        try:
-            for col in self.tiles:
-                for t in col:
-                    if t:
-                        t.delete()
+        self.save()
+
+        try:    # Delete tiles
+            for tile in self.tiles:
+                tile.delete()
         except:
-            debug.log("Error deleting chunk")
+            debug.log("Error deleting tiles", priority=1)
 
     def save(self):
-        asyncio.run(write_chunk(self.chunkpos, self.to_data()))
+        asyncio.run(data_handler.write_chunk(self.chunkpos, self.to_data()))

@@ -1,35 +1,36 @@
-import perlin_noise
+import numpy as np
+import pyfastnoisesimd as fns
 
-from game import constants, positions
+from game import constants, debug
+from game.positions import Size2, Pos3
 
 
-octaves = 2
 threshold = 0.55
-freq = 16.0 * octaves
+freq = Pos3(2, 2, 4)
 
-noise = perlin_noise.PerlinNoise(octaves=octaves, seed=constants.SEED)
+noise = fns.Noise(seed=constants.SEED)
 
-# Updated for 3d-terrain
 def generate_chunk(chunkpos):
     global noise
     global threshold
     global freq
 
-    worldpos = chunkpos * positions.Pos3(constants.CHUNK_SIZE, constants.CHUNK_SIZE, 4)
+    # Generate noise
+    size = Size2.chunk_tiles() * freq
+    startpos = chunkpos * freq * Size2.chunk_tiles()
 
-    chunk = []
-    
+    pixels = noise.genAsGrid(shape=size.to_coords(), start=startpos.to_coords()) + 0.5
+
+    # Turn 2d array of int -> 1d array of dict
+    tiles = []
     for x in range(constants.CHUNK_SIZE):
-        col = []
         for y in range(constants.CHUNK_SIZE):
-            pixel = noise([(worldpos.x + x) / freq, (worldpos.y + y) / freq, (worldpos.z) / freq]) * 0.5 + 0.5
-            t_data = {
-                "value": pixel,
-                "material": ("stone" if pixel >= threshold else "air"),
-                "tilepos": positions.Tilepos(x, y).to_list()
-            }
+            tiles.append(_tile(pixels[x * freq.x, y * freq.y]))
 
-            col.append(t_data)
-        chunk.append(col)
+    return np.array(tiles)
 
-    return chunk
+
+def _tile(pixel):
+    return {
+        "material": ("stone" if pixel >= threshold else "air"),
+    }
