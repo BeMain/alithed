@@ -62,6 +62,7 @@ class Terrain(pyglet.event.EventDispatcher):
                 debug.log(f"Loading chunk {key}")
                 c = Chunk(positions.Chunkpos.from_str(key))
                 await c.load_tiles()
+                await c.activate()
                 c.push_handlers(on_update=self.on_tile_update)
                 self.chunks[str(key)] = c
 
@@ -87,7 +88,8 @@ class Terrain(pyglet.event.EventDispatcher):
         except:
             # Load the chunk from memory
             c = Chunk(chunkpos)
-            asyncio.run(c.load_tiles())
+
+            asyncio.run(c.activate())
         
         tile = c.tiles[tilepos.x][tilepos.y]
         return tile

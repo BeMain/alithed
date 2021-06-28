@@ -18,6 +18,8 @@ class Chunk(pyglet.event.EventDispatcher):
 
         self.tiles = []
 
+        self.task = None
+
     
     def on_tile_update(self, tilepos):
         self.dispatch_event("on_update", self.chunkpos, tilepos)
@@ -31,8 +33,13 @@ class Chunk(pyglet.event.EventDispatcher):
                 t.set_pos(screenpos, self.chunkpos.z - pos.z)
 
     async def load_tiles(self):
-        # TODO: Needs optimizing
-        chunk = await load_chunk(self.chunkpos)
+        self.task = asyncio.create_task(load_chunk(self.chunkpos))
+        await asyncio.sleep(0)
+
+    async def activate(self):
+        if not self.task:
+            await self.load_tiles()
+        chunk = await self.task
 
         # Turn the 3d-list of dicts -> 3d-list of Tiles
         self.tiles = list(map(lambda col: list(map(self.load_tile, col)), chunk))
