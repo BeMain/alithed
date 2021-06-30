@@ -25,12 +25,12 @@ class Terrain(pyglet.event.EventDispatcher):
         self.set_pos(playerpos)
 
     def set_pos(self, playerpos):
-        self.load_chunks_on_screen(playerpos)
+        asyncio.run(self.load_chunks_on_screen(playerpos))
 
         for chunk in self.chunks.values():
             chunk.set_pos(playerpos)
 
-    def load_chunks_on_screen(self, pos):
+    async def load_chunks_on_screen(self, pos):
         # Get chunk positions for lower left and upper right corner
         corners = []
         for rel_cords in [(-1, -1), (1, 1)]:
@@ -46,7 +46,7 @@ class Terrain(pyglet.event.EventDispatcher):
                 for z in range(pos.z - 1, pos.z + 2):
                     new_keys.append(str((x, y, z)))
 
-        asyncio.run(self.load_chunks(new_keys))
+        await self.load_chunks(new_keys)
 
         # Unload old chunks
         to_remove = list(set(old_keys) - set(new_keys))

@@ -6,7 +6,8 @@ import asyncio
 import concurrent.futures
 
 from game import resources, constants, positions, debug
-from game.terrain import terrain, data_handler
+from game.terrain import terrain
+from game.terrain.data_handler import read_player_data, write_player_data
 from game.gui import pause
 
 
@@ -31,14 +32,14 @@ class Player(pyglet.sprite.Sprite):
         self.screenpos = positions.Screenpos(self.x, self.y)
 
         # Load player data
-        asyncio.run(self.load_data())
+        self.load_data()
     
     @property
     def size(self):
         return positions.Size2(self.width, self.height)
 
-    async def load_data(self):
-        data = await data_handler.read_player_data()
+    def load_data(self):
+        data = read_player_data()
         if data:
             self.pos = positions.Worldpos(*data["worldpos"])
     
@@ -48,7 +49,7 @@ class Player(pyglet.sprite.Sprite):
         }
     
     def save(self):
-        asyncio.run(data_handler.write_player_data(self.to_data()))
+        write_player_data(self.to_data())
 
 
     def update(self, dt):

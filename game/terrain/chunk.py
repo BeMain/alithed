@@ -6,7 +6,7 @@ import pyglet
 
 from game import debug, constants
 from game.positions import Size2
-from game.terrain import data_handler
+from game.terrain.data_handler import aload_chunk, write_chunk
 from .tile import Tile
 
 
@@ -22,7 +22,7 @@ class Chunk(pyglet.event.EventDispatcher):
         self.task = None
 
     async def load_tiles(self):
-        self.task = asyncio.create_task(data_handler.load_chunk(self.chunkpos))
+        self.task = asyncio.create_task(aload_chunk(self.chunkpos))
         await asyncio.sleep(0)
 
     async def activate(self):
@@ -66,4 +66,4 @@ class Chunk(pyglet.event.EventDispatcher):
             debug.log("Error deleting tiles", priority=1)
 
     def save(self):
-        asyncio.run(data_handler.write_chunk(self.chunkpos, self.to_data()))
+        write_chunk(self.chunkpos, self.to_data())
