@@ -10,6 +10,7 @@ freq = Pos3(2, 2, 4)
 
 noise = fns.Noise(seed=constants.SEED)
 
+
 def generate_chunk(chunkpos):
     global noise
     global threshold
@@ -19,7 +20,8 @@ def generate_chunk(chunkpos):
     size = Size2.chunk_tiles() * freq
     startpos = chunkpos * freq * Size2.chunk_tiles()
 
-    pixels = noise.genAsGrid(shape=size.to_coords(), start=startpos.to_coords()) + 0.5
+    pixels = noise.genAsGrid(shape=size.to_coords(),
+                             start=startpos.to_coords()) + 0.5
 
     # Turn 2d array of int -> 1d array of dict
     tiles = []
