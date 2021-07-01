@@ -39,8 +39,6 @@ class GameWindow(pyglet.window.Window):
         # Register event handlers
         self.push_handlers(*self.game_obj_event_handlers)
         
-        terrain.push_handlers(on_update=self.on_tile_update)
-
         # Init Tile so they can render properly
         Tile.init_rendering(self.main_batch, self.main_group)
 
@@ -66,9 +64,7 @@ class GameWindow(pyglet.window.Window):
     def update(self, dt):
         for obj in self.game_objects:
             obj.update(dt)
-
-
-    def on_tile_update(self, chunkpos, tilepos):
+        
         terrain.update(self.player.pos)
 
 

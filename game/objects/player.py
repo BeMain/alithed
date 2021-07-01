@@ -125,7 +125,7 @@ class Player(pyglet.sprite.Sprite):
             self.dispatch_event("on_move")
     
     def on_move(self):
-        terrain.update(self.pos)
+        terrain.queue_update()
 
     @pause.pausable
     def on_mouse_motion(self, x, y, dx, dy):

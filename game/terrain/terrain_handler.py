@@ -1,8 +1,3 @@
-import math
-import numpy as np
-import time
-import itertools
-
 import pyglet
 from pyglet.window import key
 
@@ -16,12 +11,18 @@ class Terrain(pyglet.event.EventDispatcher):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
-        self.register_event_type("on_update")
+        self.update_needed = True
         
         self.chunks = {}
 
+    def queue_update(self):
+        self.update_needed = True
+
     def update(self, playerpos):
+        if not self.update_needed:
+            return
         self.set_pos(playerpos)
+        self.update_needed = False
 
     def set_pos(self, playerpos):
         self.load_chunks_on_screen(playerpos)
@@ -56,7 +57,7 @@ class Terrain(pyglet.event.EventDispatcher):
         for key in to_remove:
             debug.log(f"Unloading chunk {key}", priority=3)
             self.unload_chunk_at(positions.Chunkpos.from_str(key))
-                        
+
                     
     def load_chunk_at(self, chunkpos):
         chunk = Chunk(chunkpos)
@@ -69,7 +70,7 @@ class Terrain(pyglet.event.EventDispatcher):
 
 
     def on_tile_update(self, chunkpos, tilepos):
-        self.dispatch_event("on_update", chunkpos, tilepos)
+        self.queue_update()
 
     def get_tile(self, worldpos):
         chunkpos = worldpos.to_chunkpos()
