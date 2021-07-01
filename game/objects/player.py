@@ -1,7 +1,6 @@
 import pyglet
 from pyglet.window import key
 
-import math
 import concurrent.futures
 
 from game import resources, constants, positions, debug

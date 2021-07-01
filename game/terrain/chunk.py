@@ -4,7 +4,6 @@ import numpy as np
 import pyglet
 
 from game import debug, constants
-from game.positions import Size2
 from game.terrain import data_handler
 from .tile import Tile
 

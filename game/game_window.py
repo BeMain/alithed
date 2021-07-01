@@ -1,10 +1,7 @@
 import pyglet
 from pyglet.window import key
 
-import glooey
-
 import time
-import math
 
 from game import constants, resources, positions, debug
 from game.terrain import terrain, Tile

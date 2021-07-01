@@ -1,7 +1,7 @@
 import pyglet
-from pyglet.window import key
 
-from game import constants, debug, positions
+from game import debug
+from game.positions import Pos2, Size2, Chunkpos
 from .chunk import Chunk
 
 
@@ -34,7 +34,7 @@ class Terrain(pyglet.event.EventDispatcher):
         # Get chunk positions for lower left and upper right corner
         corners = []
         for rel_cords in [(-1, -1), (1, 1)]:
-            worldpos = pos + positions.Pos2.from_list(rel_cords) * positions.Size2.screensize() // 2
+            worldpos = pos + Pos2.from_list(rel_cords) * Size2.screensize() // 2
             chunkpos = worldpos.to_chunkpos()
             corners.append(chunkpos)
 
@@ -50,13 +50,13 @@ class Terrain(pyglet.event.EventDispatcher):
         for key in new_keys:
             if key not in self.chunks.keys():
                 debug.log(f"Loading chunk {key}", priority=3)
-                self.load_chunk_at(positions.Chunkpos.from_str(key))
+                self.load_chunk_at(Chunkpos.from_str(key))
 
         # Unload old chunks
         to_remove = list(set(old_keys) - set(new_keys))
         for key in to_remove:
             debug.log(f"Unloading chunk {key}", priority=3)
-            self.unload_chunk_at(positions.Chunkpos.from_str(key))
+            self.unload_chunk_at(Chunkpos.from_str(key))
 
                     
     def load_chunk_at(self, chunkpos):
@@ -77,7 +77,7 @@ class Terrain(pyglet.event.EventDispatcher):
         tilepos = worldpos.to_tilepos()
 
         # Make sure tilepos is within bounds
-        tilepos.loop_around(positions.Size2.chunk_tiles())
+        tilepos.loop_around(Size2.chunk_tiles())
 
         try:        # Just grab the correct chunk
             chunk = self.chunks[str(chunkpos)]
