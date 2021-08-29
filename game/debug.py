@@ -1,7 +1,7 @@
 import functools
 import time
 
-CLEAR_WORLD_ON_STARTUP = True
+CLEAR_WORLD_ON_STARTUP = False
 ENABLED_LOGGING_PRIORITY = 2    # 3: Unimportant information
                                 # 2: Notes
                                 # 1: Errors
