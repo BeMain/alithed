@@ -44,7 +44,7 @@ async def write_chunk(chunkpos, chunk):
     if not os.path.exists(f"{constants.CHUNKS_PATH}/{chunkpos.z}/"):
         os.makedirs(f"{constants.CHUNKS_PATH}/{chunkpos.z}/")
 
-    data = pickle.dumps(data)
+    data = pickle.dumps(chunk)
     async with async_open(f"{constants.CHUNKS_PATH}/{chunkpos.z}/{chunkpos.x}.{chunkpos.y}", "wb") as f:
         await f.write(data)
 

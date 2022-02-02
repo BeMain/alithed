@@ -65,5 +65,5 @@ class Chunk(pyglet.event.EventDispatcher):
         except:
             debug.log("Error deleting tiles", priority=1)
 
-    def save(self):
-        data_handler.write_chunk(self.chunkpos, self.to_data())
+    async def save(self):
+        await data_handler.write_chunk(self.chunkpos, self.to_data())

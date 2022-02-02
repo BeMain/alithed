@@ -70,7 +70,8 @@ class GameWindow(pyglet.window.Window):
 
     def on_key_press(self, symbol, modifiers):
         if symbol == key.ESCAPE:    # Exit
-            self.exit()
+            loop = asyncio.get_event_loop()
+            loop.create_task(self.exit())
 
         elif symbol == key.P:       # Menu
             if self.gui.menus:
@@ -120,13 +121,13 @@ class GameWindow(pyglet.window.Window):
             if event:
                 debug.log("Event:", event)
 
-    def exit(self):
+    async def exit(self):
         # Save chunks
         for k in terrain.chunks:
-            terrain.chunks[k].save()
+            await terrain.chunks[k].save()
 
         # Save player
-        self.player.save()
+        await self.player.save()
 
         # Stop the game
         self.running = False
