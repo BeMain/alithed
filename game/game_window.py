@@ -1,6 +1,7 @@
 import pyglet
 from pyglet.window import key
 
+import asyncio
 import time
 
 from game import constants, resources, positions, debug
@@ -104,10 +105,13 @@ class GameWindow(pyglet.window.Window):
 
         # Main loop
         while self.running:
-            if time.time() - self.last_scheduled_update > 1 / constants.FPS:
-                self.update(time.time() - self.last_scheduled_update)
-                self.last_scheduled_update = time.time()
-                self.render()
+            start_time = time.time()
+            self.update(start_time - self.last_scheduled_update)
+            self.render()
+
+            self.last_scheduled_update = start_time
+
+            await asyncio.sleep(max((1 / constants.FPS) - (time.time() - self.last_scheduled_update), 0))
 
             event = self.dispatch_events()
             if event:
