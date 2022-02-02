@@ -1,3 +1,5 @@
+import asyncio
+
 from game import game_window, debug
 from game.terrain import data_handler
 
@@ -10,4 +12,4 @@ if __name__ == "__main__":
 
     # Start application
     window = game_window.GameWindow()
-    window.run()
+    asyncio.run(window.run())
