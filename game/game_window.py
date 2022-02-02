@@ -124,7 +124,7 @@ class GameWindow(pyglet.window.Window):
     async def exit(self):
         # Save chunks
         for k in terrain.chunks:
-            await terrain.chunks[k].save()
+            await terrain.chunks[k].delete()
 
         # Save player
         await self.player.save()

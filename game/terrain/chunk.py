@@ -53,11 +53,11 @@ class Chunk(pyglet.event.EventDispatcher):
     def to_data(self):
         return [tile.to_data() for tile in self.tiles]
 
-    def delete(self):
+    async def delete(self):
         if not self.is_loaded:
             self.load_tiles_task.cancel()
 
-        self.save()
+        await self.save()
 
         try:    # Delete tiles
             for tile in self.tiles:
