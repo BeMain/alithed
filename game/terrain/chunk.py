@@ -1,10 +1,11 @@
 import concurrent.futures
 import numpy as np
+import asyncio
 
 import pyglet
 
 from game import debug, constants
-from game.terrain import data_handler
+from game.terrain import async_data_handler
 from .tile import Tile
 
 
@@ -17,13 +18,18 @@ class Chunk(pyglet.event.EventDispatcher):
         self.chunkpos = chunkpos
 
         self.tiles = np.zeros(constants.CHUNK_SIZE ** 2)
-        self._load_tiles()
+        self.load_tiles_task = asyncio.create_task(self._load_tiles())
+        self.loaded = False
 
-    def _load_tiles(self):
-        chunk = data_handler.load_chunk(self.chunkpos)
+    async def _load_tiles(self):
+        if self.loaded:
+            return
+
+        chunk = await data_handler.load_chunk(self.chunkpos)
         # Turn the array of dicts -> array of Tiles
         self.tiles = np.array([self._load_tile(tile, idx)
                               for idx, tile in enumerate(chunk)])
+        self.loaded = True
 
     def _load_tile(self, *args):
         tile = Tile.from_data(*args)
