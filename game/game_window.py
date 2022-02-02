@@ -64,7 +64,7 @@ class GameWindow(pyglet.window.Window):
     @pause.pausable
     async def update(self, dt):
         for obj in self.game_objects:
-            obj.update(dt)
+            await obj.update(dt)
 
         await terrain.update(self.player.pos)
 

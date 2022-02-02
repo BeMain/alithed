@@ -72,7 +72,7 @@ class Terrain(pyglet.event.EventDispatcher):
     def on_tile_update(self, chunkpos, tilepos):
         self.queue_update()
 
-    def get_tile(self, worldpos):
+    async def get_tile(self, worldpos):
         chunkpos = worldpos.to_chunkpos()
         tilepos = worldpos.to_tilepos()
 
@@ -83,6 +83,7 @@ class Terrain(pyglet.event.EventDispatcher):
             chunk = self.chunks[str(chunkpos)]
         except:     # Load the chunk from memory
             chunk = Chunk(chunkpos)
+            await chunk.load_tiles_task
 
         tile = chunk.get_tile(tilepos)
         return tile

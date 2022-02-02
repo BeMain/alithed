@@ -49,11 +49,11 @@ class Player(pyglet.sprite.Sprite):
         with concurrent.futures.ThreadPoolExecutor() as executor:
             executor.submit(data_handler.write_player_data, self.to_data())
 
-    def update(self, dt):
-        self.handle_xy_movement(dt)
+    async def update(self, dt):
+        await self.handle_xy_movement(dt)
         self.handle_z_movement()
 
-    def handle_xy_movement(self, dt):
+    async def handle_xy_movement(self, dt):
         # Handle movement
         dpos = positions.Vector2(0, 0)
         if self.key_handler[key.RIGHT] or self.key_handler[key.D]:
@@ -76,19 +76,19 @@ class Player(pyglet.sprite.Sprite):
         if dpos.x:
             # Move in x-direction
             self.pos += positions.Pos3.from_pos2(
-                *self.calculate_move_xory(positions.Vector2(x=dpos.x), speed))
+                *await self.calculate_move_xory(positions.Vector2(x=dpos.x), speed))
         if dpos.y:
             # Move in y-direction
             self.pos += positions.Pos3.from_pos2(
-                *self.calculate_move_xory(positions.Vector2(y=dpos.y), speed))
+                *await self.calculate_move_xory(positions.Vector2(y=dpos.y), speed))
 
         # Trigger move event
         self.dispatch_event("on_move")
 
-    def calculate_move_xory(self, dpos, speed):
+    async def calculate_move_xory(self, dpos, speed):
         newpos = self.pos + dpos * (self.size // 2 + speed)
 
-        tile = terrain.get_tile(newpos)
+        tile = await terrain.get_tile(newpos)
 
         normal_move = dpos * speed
         snap_move = (abs(tile.screenpos - self.screenpos) -
@@ -97,16 +97,16 @@ class Player(pyglet.sprite.Sprite):
         # Check if new pos is obstructed
         if tile.material != "air":
             # Test if we can move UP to the next tile
-            tile_a = terrain.get_tile(newpos + positions.Pos3(0, 0, 1))
+            tile_a = await terrain.get_tile(newpos + positions.Pos3(0, 0, 1))
             if tile_a.material == "air":
                 return normal_move, 1
 
             return snap_move, 0
 
         # Check if there is a tile below new pos
-        if terrain.get_tile(newpos - positions.Pos3(0, 0, 1)).material == "air":
+        if (await terrain.get_tile(newpos - positions.Pos3(0, 0, 1))).material == "air":
             # Test if we can move DOWN to the next tile
-            if terrain.get_tile(newpos - positions.Pos3(0, 0, 2)).material != "air":
+            if (await terrain.get_tile(newpos - positions.Pos3(0, 0, 2))).material != "air":
                 return normal_move, -1
 
             return snap_move, 0
