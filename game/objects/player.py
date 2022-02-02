@@ -4,7 +4,7 @@ from pyglet.window import key
 import concurrent.futures
 
 from game import resources, constants, positions, debug
-from game.terrain import terrain, async_data_handler
+from game.terrain import terrain, data_handler
 from game.gui import pause
 
 
@@ -33,7 +33,7 @@ class Player(pyglet.sprite.Sprite):
         return positions.Size2(self.width, self.height)
 
     async def load_data(self):
-        data = await async_data_handler.read_player_data()
+        data = await data_handler.read_player_data()
         if data:
             self.pos = positions.Worldpos(*data["worldpos"])
 
@@ -43,7 +43,7 @@ class Player(pyglet.sprite.Sprite):
         }
 
     async def save(self):
-        await async_data_handler.write_player_data(self.to_data())
+        await data_handler.write_player_data(self.to_data())
 
     async def update(self, dt):
         await self.handle_xy_movement(dt)

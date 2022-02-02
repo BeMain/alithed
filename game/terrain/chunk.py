@@ -4,7 +4,7 @@ import asyncio
 import pyglet
 
 from game import debug, constants
-from game.terrain import async_data_handler
+from game.terrain import data_handler
 from .tile import Tile
 
 
@@ -24,7 +24,7 @@ class Chunk(pyglet.event.EventDispatcher):
         if self.loaded:
             return
 
-        chunk = await async_data_handler.load_chunk(self.chunkpos)
+        chunk = await data_handler.load_chunk(self.chunkpos)
         # Turn the array of dicts -> array of Tiles
         self.tiles = np.array([self._load_tile(tile, idx)
                               for idx, tile in enumerate(chunk)])
@@ -66,4 +66,4 @@ class Chunk(pyglet.event.EventDispatcher):
             debug.log("Error deleting tiles", priority=1)
 
     def save(self):
-        async_data_handler.write_chunk(self.chunkpos, self.to_data())
+        data_handler.write_chunk(self.chunkpos, self.to_data())
