@@ -63,10 +63,10 @@ class GameWindow(pyglet.window.Window):
 
     @pause.pausable
     async def update(self, dt):
+        await terrain.update(self.player.pos)
+
         for obj in self.game_objects:
             await obj.update(dt)
-
-        await terrain.update(self.player.pos)
 
     def on_key_press(self, symbol, modifiers):
         if symbol == key.ESCAPE:    # Exit

@@ -42,6 +42,9 @@ class Chunk(pyglet.event.EventDispatcher):
         return self.tiles[tilepos.to_index()]
 
     def set_pos(self, playerpos):
+        if not self.loaded:
+            return
+
         screenpos = self.chunkpos.to_screenpos(playerpos)
         for tile in self.tiles:
             # TODO: Don't render if block above
@@ -51,6 +54,9 @@ class Chunk(pyglet.event.EventDispatcher):
         return [tile.to_data() for tile in self.tiles]
 
     def delete(self):
+        if not self.loaded:
+            self.load_tiles_task.cancel()
+
         self.save()
 
         try:    # Delete tiles
