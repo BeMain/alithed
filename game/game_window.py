@@ -62,11 +62,11 @@ class GameWindow(pyglet.window.Window):
         self.flip()
 
     @pause.pausable
-    def update(self, dt):
+    async def update(self, dt):
         for obj in self.game_objects:
             obj.update(dt)
 
-        terrain.update(self.player.pos)
+        await terrain.update(self.player.pos)
 
     def on_key_press(self, symbol, modifiers):
         if symbol == key.ESCAPE:    # Exit
@@ -100,13 +100,13 @@ class GameWindow(pyglet.window.Window):
         self.set_mouse_cursor(cursor)
 
         # Update terrain
-        terrain.update(self.player.pos)
+        await terrain.update(self.player.pos)
         self.last_scheduled_update = time.time()
 
         # Main loop
         while self.running:
             start_time = time.time()
-            self.update(start_time - self.last_scheduled_update)
+            await self.update(start_time - self.last_scheduled_update)
             self.render()
 
             self.last_scheduled_update = start_time

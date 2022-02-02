@@ -18,19 +18,19 @@ class Terrain(pyglet.event.EventDispatcher):
     def queue_update(self):
         self.update_needed = True
 
-    def update(self, playerpos):
+    async def update(self, playerpos):
         if not self.update_needed:
             return
-        self.set_pos(playerpos)
+        await self.set_pos(playerpos)
         self.update_needed = False
 
-    def set_pos(self, playerpos):
-        self.load_chunks_on_screen(playerpos)
+    async def set_pos(self, playerpos):
+        await self.load_chunks_on_screen(playerpos)
 
         for chunk in self.chunks.values():
             chunk.set_pos(playerpos)
 
-    def load_chunks_on_screen(self, pos):
+    async def load_chunks_on_screen(self, pos):
         # Get chunk positions for lower left and upper right corner
         corners = []
         for rel_cords in [(-1, -1), (1, 1)]:
@@ -51,7 +51,7 @@ class Terrain(pyglet.event.EventDispatcher):
         for key in new_keys:
             if key not in self.chunks.keys():
                 debug.log(f"Loading chunk {key}", priority=3)
-                self.load_chunk_at(Chunkpos.from_str(key))
+                await self.load_chunk_at(Chunkpos.from_str(key))
 
         # Unload old chunks
         to_remove = list(set(old_keys) - set(new_keys))
@@ -59,8 +59,9 @@ class Terrain(pyglet.event.EventDispatcher):
             debug.log(f"Unloading chunk {key}", priority=3)
             self.unload_chunk_at(Chunkpos.from_str(key))
 
-    def load_chunk_at(self, chunkpos):
+    async def load_chunk_at(self, chunkpos):
         chunk = Chunk(chunkpos)
+        await chunk.load_tiles_task
         chunk.push_handlers(on_update=self.on_tile_update)
         self.chunks[str(chunkpos)] = chunk
 

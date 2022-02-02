@@ -24,7 +24,7 @@ class Chunk(pyglet.event.EventDispatcher):
         if self.loaded:
             return
 
-        chunk = await data_handler.load_chunk(self.chunkpos)
+        chunk = await async_data_handler.load_chunk(self.chunkpos)
         # Turn the array of dicts -> array of Tiles
         self.tiles = np.array([self._load_tile(tile, idx)
                               for idx, tile in enumerate(chunk)])
@@ -60,4 +60,4 @@ class Chunk(pyglet.event.EventDispatcher):
             debug.log("Error deleting tiles", priority=1)
 
     def save(self):
-        data_handler.write_chunk(self.chunkpos, self.to_data())
+        async_data_handler.write_chunk(self.chunkpos, self.to_data())
