@@ -9,6 +9,7 @@ glooey = "*"
 perlin-noise = "*"
 numpy = "*"
 pyfastnoisesimd = "*"
+aiofiles = "*"
 
 [dev-packages]
 autopep8 = "*"
