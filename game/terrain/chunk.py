@@ -18,17 +18,17 @@ class Chunk(pyglet.event.EventDispatcher):
 
         self.tiles = np.zeros(constants.CHUNK_SIZE ** 2)
         self.load_tiles_task = asyncio.create_task(self._load_tiles())
-        self.loaded = False
+        self.is_loaded = False
 
     async def _load_tiles(self):
-        if self.loaded:
+        if self.is_loaded:
             return
 
         chunk = await data_handler.load_chunk(self.chunkpos)
         # Turn the array of dicts -> array of Tiles
         self.tiles = np.array([self._load_tile(tile, idx)
                               for idx, tile in enumerate(chunk)])
-        self.loaded = True
+        self.is_loaded = True
 
     def _load_tile(self, *args):
         tile = Tile.from_data(*args)
@@ -42,7 +42,7 @@ class Chunk(pyglet.event.EventDispatcher):
         return self.tiles[tilepos.to_index()]
 
     def set_pos(self, playerpos):
-        if not self.loaded:
+        if not self.is_loaded:
             return
 
         screenpos = self.chunkpos.to_screenpos(playerpos)
@@ -54,7 +54,7 @@ class Chunk(pyglet.event.EventDispatcher):
         return [tile.to_data() for tile in self.tiles]
 
     def delete(self):
-        if not self.loaded:
+        if not self.is_loaded:
             self.load_tiles_task.cancel()
 
         self.save()

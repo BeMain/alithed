@@ -76,7 +76,7 @@ class Terrain(pyglet.event.EventDispatcher):
                 for z in range(pos.z - 1, pos.z + 2):
                     # Activate chunk
                     key = str((x, y, z))
-                    if not self.chunks[key].loaded:
+                    if not self.chunks[key].is_loaded:
                         debug.log(f"Activating chunk {key}", priority=3)
                         await self.chunks[key].load_tiles_task
 
@@ -101,7 +101,7 @@ class Terrain(pyglet.event.EventDispatcher):
 
         try:        # Just grab the correct chunk
             chunk = self.chunks[str(chunkpos)]
-            if not chunk.loaded:
+            if not chunk.is_loaded:
                 await chunk.load_tiles_task
         except:     # Load the chunk from memory
             chunk = Chunk(chunkpos)
