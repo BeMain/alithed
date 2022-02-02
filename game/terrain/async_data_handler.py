@@ -14,7 +14,7 @@ async def read_player_data():
         return
     async with async_open(path, "r") as f:
         data = await f.read()
-    return json.loads(readfile)
+    return json.loads(data)
 
 
 async def write_player_data(data):

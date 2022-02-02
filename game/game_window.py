@@ -99,6 +99,9 @@ class GameWindow(pyglet.window.Window):
         cursor = self.get_system_mouse_cursor(self.CURSOR_CROSSHAIR)
         self.set_mouse_cursor(cursor)
 
+        # Load saved player data
+        await self.player.load_data()
+
         # Update terrain
         await terrain.update(self.player.pos)
         self.last_scheduled_update = time.time()
