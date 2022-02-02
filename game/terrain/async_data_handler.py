@@ -2,7 +2,7 @@ import pickle
 import json
 import os
 import shutil
-import aiofiles
+from aiofile import async_open
 
 from game import constants, debug
 from .terrain_generation import generate_chunk
@@ -12,13 +12,14 @@ async def read_player_data():
     path = constants.PLAYER_DATA_PATH
     if not os.path.exists(path):
         return
-    async with aiofiles.open(path, mode="r") as readfile:
-        return json.load(readfile)
+    async with async_open(path, "r") as f:
+        data = await f.read()
+    return json.loads(readfile)
 
 
 async def write_player_data(data):
-    async with aiofiles.open(constants.PLAYER_DATA_PATH, mode="w") as writefile:
-        json.dump(data, writefile)
+    async with async_open(constants.PLAYER_DATA_PATH, "w") as f:
+        await f.write(json.dumps(data))
 
 
 def clear_player_data():
@@ -32,8 +33,9 @@ async def read_chunk(chunkpos):
     path = f"{constants.CHUNKS_PATH}/{chunkpos.z}/{chunkpos.x}.{chunkpos.y}"
     if not os.path.exists(path):
         return
-    async with aiofiles.open(path, "rb") as readfile:
-        return pickle.load(readfile)
+    async with async_open(path, "rb") as f:
+        data = await f.read()
+    return pickle.loads(data)
 
 
 async def write_chunk(chunkpos, chunk):
@@ -42,8 +44,9 @@ async def write_chunk(chunkpos, chunk):
     if not os.path.exists(f"{constants.CHUNKS_PATH}/{chunkpos.z}/"):
         os.makedirs(f"{constants.CHUNKS_PATH}/{chunkpos.z}/")
 
-    async with aiofiles.open(f"{constants.CHUNKS_PATH}/{chunkpos.z}/{chunkpos.x}.{chunkpos.y}", "wb") as writefile:
-        pickle.dump(chunk, writefile)
+    data = pickle.dumps(data)
+    async with async_open(f"{constants.CHUNKS_PATH}/{chunkpos.z}/{chunkpos.x}.{chunkpos.y}", "wb") as f:
+        await f.write(data)
 
 
 async def load_chunk(chunkpos):
