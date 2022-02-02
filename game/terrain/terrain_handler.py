@@ -76,7 +76,7 @@ class Terrain(pyglet.event.EventDispatcher):
                 for z in range(pos.z - 1, pos.z + 2):
                     # Activate chunk
                     key = str((x, y, z))
-                    if key not in self.chunks.keys():
+                    if not self.chunks[key].loaded:
                         debug.log(f"Activating chunk {key}", priority=3)
                         await self.chunks[key].load_tiles_task
 
