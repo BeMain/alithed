@@ -1,4 +1,3 @@
-import concurrent.futures
 import numpy as np
 import asyncio
 
@@ -61,6 +60,4 @@ class Chunk(pyglet.event.EventDispatcher):
             debug.log("Error deleting tiles", priority=1)
 
     def save(self):
-        with concurrent.futures.ThreadPoolExecutor() as executor:
-            executor.submit(data_handler.write_chunk,
-                            self.chunkpos, self.to_data())
+        data_handler.write_chunk(self.chunkpos, self.to_data())
