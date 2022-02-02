@@ -12,7 +12,7 @@ class Terrain(pyglet.event.EventDispatcher):
         super().__init__(*args, **kwargs)
 
         self.update_needed = True
-        
+
         self.chunks = {}
 
     def queue_update(self):
@@ -34,7 +34,8 @@ class Terrain(pyglet.event.EventDispatcher):
         # Get chunk positions for lower left and upper right corner
         corners = []
         for rel_cords in [(-1, -1), (1, 1)]:
-            worldpos = pos + Pos2.from_list(rel_cords) * Size2.screensize() // 2
+            worldpos = pos + \
+                Pos2.from_list(rel_cords) * Size2.screensize() // 2
             chunkpos = worldpos.to_chunkpos()
             corners.append(chunkpos)
 
@@ -58,7 +59,6 @@ class Terrain(pyglet.event.EventDispatcher):
             debug.log(f"Unloading chunk {key}", priority=3)
             self.unload_chunk_at(Chunkpos.from_str(key))
 
-                    
     def load_chunk_at(self, chunkpos):
         chunk = Chunk(chunkpos)
         chunk.push_handlers(on_update=self.on_tile_update)
@@ -67,7 +67,6 @@ class Terrain(pyglet.event.EventDispatcher):
     def unload_chunk_at(self, chunkpos):
         self.chunks[str(chunkpos)].delete()
         del self.chunks[str(chunkpos)]
-
 
     def on_tile_update(self, chunkpos, tilepos):
         self.queue_update()
@@ -83,6 +82,6 @@ class Terrain(pyglet.event.EventDispatcher):
             chunk = self.chunks[str(chunkpos)]
         except:     # Load the chunk from memory
             chunk = Chunk(chunkpos)
-        
+
         tile = chunk.get_tile(tilepos)
         return tile

@@ -4,7 +4,6 @@ from game import items, resources
 from game.gui import gui
 
 
-
 class Inventory:
     def __init__(self, gui, *args, **kwargs):
         super().__init__()
@@ -13,7 +12,6 @@ class Inventory:
         self.gridview = self.GridView()
 
         self.is_open = False
-
 
     def open(self):
         if not self.is_open:
@@ -24,13 +22,12 @@ class Inventory:
         if self.is_open:
             self.is_open = False
             self.gui.remove(self.gridview)
-    
+
     def toggle(self):
         if not self.is_open:
             self.open()
         else:
             self.close()
-        
 
     class GridView(glooey.Widget):
         num_rows = 5
@@ -44,18 +41,18 @@ class Inventory:
                 super().__init__(image, *args, **kwargs)
 
                 self.item = item
-        
 
         def __init__(self, *args, **kwargs):
             super().__init__(*args, **kwargs)
 
-            self.items = [[items.items["stone"]] * self.num_rows]* self.num_cols
+            self.items = [[items.items["stone"]]
+                          * self.num_rows] * self.num_cols
 
             # Create widgets
             self.grid = self.Grid()
 
             for x in range(self.num_rows):
                 for y in range(self.num_cols):
-                    self.grid.add(x,y, self.Cell(self.items[x][y]))
+                    self.grid.add(x, y, self.Cell(self.items[x][y]))
 
             self._attach_child(self.grid)

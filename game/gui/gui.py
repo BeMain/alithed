@@ -14,9 +14,10 @@ class WhiteBorder(glooey.Background):
     custom_bottom_right = resources.white_border["br"]
     custom_bottom_left = resources.white_border["bl"]
 
+
 class WhiteFrame(glooey.Frame):
     Decoration = WhiteBorder
-    
+
     class Box(glooey.Bin):
         custom_right_padding = 15
         custom_top_padding = 15
@@ -35,12 +36,13 @@ class Label(glooey.Label):
     custom_bottom_padding = 10
     custom_alignment = "center"
 
+
 class EditableLabel(glooey.EditableLabel):
     custom_font_name = "Lato Regular"
     custom_font_size = 20
     custom_color = "#b9ad86"
     custom_text_alignment = "left"
-    
+
     custom_horz_padding = 15
     custom_top_padding = 13
     custom_bottom_padding = 10

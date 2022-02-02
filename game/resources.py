@@ -19,11 +19,13 @@ def center_image(image):
     image.anchor_x = image.width // 2
     image.anchor_y = image.height // 2
 
+
 def get_background_scale_factor(background):
     # Used to scale background to fill screen
     scale_x = constants.SCREEN_WIDTH / background.width
     scale_y = constants.SCREEN_HEIGHT / background.height
     return max(scale_x, scale_y)
+
 
 def get_tile_image(path):
     img = pyglet.resource.image(path)
