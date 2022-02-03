@@ -1,5 +1,7 @@
 import pyglet
 
+import asyncio
+
 from game import debug
 from game.positions import Pos2, Size2, Chunkpos
 from .chunk import Chunk
@@ -86,7 +88,7 @@ class Terrain(pyglet.event.EventDispatcher):
         self.chunks[str(chunkpos)] = chunk
 
     def unload_chunk_at(self, chunkpos):
-        self.chunks[str(chunkpos)].delete()
+        asyncio.create_task(self.chunks[str(chunkpos)].delete())
         del self.chunks[str(chunkpos)]
 
     def on_tile_update(self, chunkpos, tilepos):
