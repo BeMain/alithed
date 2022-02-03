@@ -56,6 +56,7 @@ class Chunk(pyglet.event.EventDispatcher):
     async def delete(self):
         if not self.is_loaded:
             self.load_tiles_task.cancel()
+            return
 
         await self.save()
 
