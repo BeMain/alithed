@@ -1,11 +1,9 @@
 import pyglet
 from pyglet.window import key
 
-import concurrent.futures
-
-from game import resources, constants, positions, debug
-from game.terrain import terrain, data_handler
+from game import constants, debug, positions, resources
 from game.gui import pause
+from game.terrain import data_handler, terrain
 
 
 class Player(pyglet.sprite.Sprite):

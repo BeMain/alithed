@@ -1,6 +1,6 @@
 import pyglet
 
-from game import resources, constants, style
+from game import constants, resources, style
 from game.positions import Screenpos, Size2, Tilepos
 
 

@@ -1,8 +1,7 @@
 import asyncio
 
-from game import game_window, debug
+from game import debug, game_window
 from game.terrain import data_handler
-
 
 if __name__ == "__main__":
     # Enable debugging functions

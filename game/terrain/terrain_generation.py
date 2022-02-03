@@ -2,7 +2,7 @@ import numpy as np
 import pyfastnoisesimd as fns
 
 from game import constants, debug
-from game.positions import Size2, Pos3
+from game.positions import Pos3, Size2
 
 
 threshold = 0.55

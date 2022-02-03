@@ -1,13 +1,12 @@
+import asyncio
 import pyglet
 
-import asyncio
-
 from game import debug
-from game.positions import Pos2, Size2, Chunkpos
+from game.positions import Chunkpos, Pos2, Size2
 from .chunk import Chunk
 
-
 # TODO: Implement zooming in and out
+
 
 class Terrain(pyglet.event.EventDispatcher):
     def __init__(self, *args, **kwargs):

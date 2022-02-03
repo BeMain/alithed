@@ -1,9 +1,8 @@
-import numpy as np
 import asyncio
-
+import numpy as np
 import pyglet
 
-from game import debug, constants
+from game import constants, debug
 from game.terrain import data_handler
 from .tile import Tile
 

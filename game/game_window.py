@@ -1,14 +1,13 @@
+import asyncio
+import time
 import pyglet
 from pyglet.window import key
 
-import asyncio
-import time
-
-from game import constants, resources, positions, debug
-from game.terrain import terrain, Tile
-from game.objects import player
+from game import constants, debug, positions, resources
 from game.gui import pause
 from game.gui.handler import GuiHandler
+from game.objects import player
+from game.terrain import Tile, terrain
 
 
 class GameWindow(pyglet.window.Window):
