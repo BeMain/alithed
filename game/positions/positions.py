@@ -3,8 +3,8 @@ from game.positions import Pos2, Pos3
 
 
 class Screenpos(Pos2):
-    def clamped_to_screen(self):
-        return self.clamped(self, constants.SCREEN_SIZE)
+    def clamp_to_screen(self):
+        self.clamp(self, constants.SCREEN_SIZE)
 
     def is_on_screen(self, margin=Pos2(0, 0)):
         return (self > -margin) and (self < constants.SCREEN_SIZE + margin)
@@ -35,7 +35,7 @@ class Chunkpos(Pos3):
 class Tilepos(Pos2):
     @classmethod
     def from_index(cls, idx):
-        return cls(idx // constants.CHUNK_SIZE.width, idx % constants.CHUNK_SIZE.height)
+        return cls(idx // constants.CHUNK_N_TILES.width, idx % constants.CHUNK_N_TILES.height)
 
     def to_index(self):
-        return self.y + self.x * constants.CHUNK_SIZE.height
+        return self.y + self.x * constants.CHUNK_N_TILES.width
