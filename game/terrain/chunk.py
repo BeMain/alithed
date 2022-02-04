@@ -57,6 +57,8 @@ class Chunk(pyglet.event.EventDispatcher):
             self.load_tiles_task.cancel()
             return
 
+        self.is_loaded = False
+        self.batch = None
         await self.save()
 
         try:    # Delete tiles
