@@ -19,11 +19,11 @@ class Player(pyglet.sprite.Sprite):
         self.move_speed = 500.0
         self.rotate_speed = 200.0
 
-        self.pos = positions.Worldpos()
+        self.pos = positions.Worldpos(0, 0, 0)
 
         # Can't use just positions since this is what Pyglet wants
-        self.x = constants.SCREEN_WIDTH // 2
-        self.y = constants.SCREEN_HEIGHT // 2
+        self.x = constants.SCREEN_SIZE.width // 2
+        self.y = constants.SCREEN_SIZE.height // 2
         self.screenpos = positions.Screenpos(self.x, self.y)
 
     @property

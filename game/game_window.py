@@ -12,8 +12,8 @@ from game.terrain import Tile, terrain
 
 class GameWindow(pyglet.window.Window):
     def __init__(self, *args, **kwargs):
-        super(GameWindow, self).__init__(constants.SCREEN_WIDTH,
-                                         constants.SCREEN_HEIGHT, vsync=False, *args, **kwargs)
+        super(GameWindow, self).__init__(constants.SCREEN_SIZE.width,
+                                         constants.SCREEN_SIZE.height, vsync=False, *args, **kwargs)
         self.running = True
 
         # Batches

@@ -1,9 +1,11 @@
 import asyncio
 import numpy as np
 import pyglet
+import time
 
 from game import constants, debug
 from game.terrain import data_handler
+from game.positions import Tilepos
 from .tile import Tile
 
 
@@ -15,7 +17,8 @@ class Chunk(pyglet.event.EventDispatcher):
 
         self.chunkpos = chunkpos
 
-        self.tiles = np.zeros(constants.CHUNK_SIZE ** 2)
+        self.tiles = np.zeros(constants.CHUNK_SIZE.width *
+                              constants.CHUNK_SIZE.height)
         self.load_tiles_task = asyncio.create_task(self._load_tiles())
         self.is_loaded = False
 
