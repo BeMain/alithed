@@ -15,7 +15,6 @@ class GameWindow(pyglet.window.Window):
         super(GameWindow, self).__init__(constants.SCREEN_WIDTH,
                                          constants.SCREEN_HEIGHT, vsync=False, *args, **kwargs)
         self.running = True
-        self.last_scheduled_update = time.time()
 
         # Batches
         self.main_batch = pyglet.graphics.Batch()
@@ -104,21 +103,25 @@ class GameWindow(pyglet.window.Window):
 
         # Update terrain
         await terrain.update(self.player.pos)
-        self.last_scheduled_update = time.time()
+        last_update = time.time()
 
         # Main loop
         while self.running:
             start_time = time.time()
-            await self.update(start_time - self.last_scheduled_update)
+
+            # Update & render
+            await self.update(start_time - last_update)
             self.render()
 
-            self.last_scheduled_update = start_time
+            # Sleep for the rest of the frame
+            await asyncio.sleep(max((1 / constants.FPS) - (time.time() - start_time), 0))
 
-            await asyncio.sleep(max((1 / constants.FPS) - (time.time() - self.last_scheduled_update), 0))
-
+            # Catch events (don't know why we do this)
             event = self.dispatch_events()
             if event:
                 debug.log("Event:", event)
+
+            last_update = start_time
 
     async def exit(self):
         # Save chunks
