@@ -12,6 +12,7 @@ def save():
     with open(constants.ITEMS_PATH, "w") as writefile:
         json.dump(items, writefile)
 
+
 def load():
     global items
     if not os.path.exists(constants.ITEMS_PATH):
@@ -19,6 +20,7 @@ def load():
         return
     with open(constants.ITEMS_PATH, "r") as readfile:
         return json.load(readfile)
+
 
 def clear():
     global items
@@ -31,6 +33,7 @@ def generate():
     return {
         "stone": _item(0)
     }
+
 
 def _item(texture_id):
     return {

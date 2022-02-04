@@ -11,7 +11,5 @@ def pausable(func):
         if not paused:
             return func(*args, **kwargs)
         return None
-    
+
     return wrapper
-
-

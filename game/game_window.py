@@ -1,16 +1,13 @@
+import asyncio
+import time
 import pyglet
 from pyglet.window import key
 
-import glooey
-
-import time
-import math
-
-from game import constants, resources, positions, debug
-from game.terrain import terrain, Tile
-from game.objects import player
+from game import constants, debug, positions, resources
 from game.gui import pause
 from game.gui.handler import GuiHandler
+from game.objects import player
+from game.terrain import Tile, terrain
 
 
 class GameWindow(pyglet.window.Window):
@@ -18,7 +15,6 @@ class GameWindow(pyglet.window.Window):
         super(GameWindow, self).__init__(constants.SCREEN_WIDTH,
                                          constants.SCREEN_HEIGHT, vsync=False, *args, **kwargs)
         self.running = True
-        self.last_scheduled_update = time.time()
 
         # Batches
         self.main_batch = pyglet.graphics.Batch()
@@ -26,27 +22,28 @@ class GameWindow(pyglet.window.Window):
 
         # Groups
         self.main_group = pyglet.graphics.Group()
-        self.objects_group = pyglet.graphics.OrderedGroup(5, parent=self.main_group)
+        self.objects_group = pyglet.graphics.OrderedGroup(
+            5, parent=self.main_group)
 
         # Objects
         self.gui = GuiHandler(self, batch=self.gui_batch)
-        self.player = player.Player(batch=self.main_batch, group=self.objects_group)
+        self.player = player.Player(
+            batch=self.main_batch, group=self.objects_group)
         self.fps_display = self.init_fps_display()
 
         self.game_objects = [self.player]
-        self.game_obj_event_handlers = [handler for obj in self.game_objects for handler in obj.event_handlers]
-            
+        self.game_obj_event_handlers = [
+            handler for obj in self.game_objects for handler in obj.event_handlers]
+
         # Register event handlers
         self.push_handlers(*self.game_obj_event_handlers)
-        
-        terrain.push_handlers(on_update=self.on_tile_update)
 
         # Init Tile so they can render properly
         Tile.init_rendering(self.main_batch, self.main_group)
 
     def init_fps_display(self):
         display = pyglet.window.FPSDisplay(self)
-        display.label.color = (255,255,255,255)
+        display.label.color = (255, 255, 255, 255)
 
         return display
 
@@ -54,7 +51,7 @@ class GameWindow(pyglet.window.Window):
         self.clear()
 
         # Draw background
-        resources.background_image.blit(0,0)
+        resources.background_image.blit(0, 0)
         # Draw objects
         self.main_batch.draw()
         self.gui_batch.draw()
@@ -63,25 +60,23 @@ class GameWindow(pyglet.window.Window):
         self.flip()
 
     @pause.pausable
-    def update(self, dt):
+    async def update(self, dt):
+        await terrain.update(self.player.pos)
+
         for obj in self.game_objects:
-            obj.update(dt)
-
-
-    def on_tile_update(self, chunkpos, tilepos):
-        terrain.update(self.player.pos)
-
+            await obj.update(dt)
 
     def on_key_press(self, symbol, modifiers):
         if symbol == key.ESCAPE:    # Exit
-            self.exit()
-        
+            loop = asyncio.get_event_loop()
+            loop.create_task(self.exit())
+
         elif symbol == key.P:       # Menu
             if self.gui.menus:
                 self.gui.close_menus()
             else:
                 self.gui.open_main_menu()
-        
+
         elif symbol == key.I:       # Inventory
             self.gui.inventory.toggle()
 
@@ -90,42 +85,51 @@ class GameWindow(pyglet.window.Window):
         pos = positions.Screenpos(x, y)
         pos.clamp_to_screen()
 
-        worldpos = pos.to_worldpos(self.player.pos) 
-        
+        worldpos = pos.to_worldpos(self.player.pos)
+
         tile = terrain.get_tile(worldpos)
         if tile.material == "air":
             tile.set_material("stone")
         else:
             tile.set_material("air")
 
-    def run(self):
+    async def run(self):
         # Initialization
         cursor = self.get_system_mouse_cursor(self.CURSOR_CROSSHAIR)
         self.set_mouse_cursor(cursor)
-    
+
+        # Load saved player data
+        await self.player.load_data()
+
         # Update terrain
-        terrain.update(self.player.pos)
-        self.last_scheduled_update = time.time()
+        await terrain.update(self.player.pos)
+        last_update = time.time()
 
         # Main loop
         while self.running:
-            if time.time() - self.last_scheduled_update > 1 / constants.FPS:
-                self.update(time.time() - self.last_scheduled_update)
-                self.last_scheduled_update = time.time()
-                self.render()
+            start_time = time.time()
 
+            # Update & render
+            await self.update(start_time - last_update)
+            self.render()
 
+            # Sleep for the rest of the frame
+            await asyncio.sleep(max((1 / constants.FPS) - (time.time() - start_time), 0))
+
+            # Catch events (don't know why we do this)
             event = self.dispatch_events()
-            if event: debug.log("Event:", event)
+            if event:
+                debug.log("Event:", event)
 
-        
-    def exit(self):
+            last_update = start_time
+
+    async def exit(self):
         # Save chunks
         for k in terrain.chunks:
-            terrain.chunks[k].save()
-            
+            await terrain.chunks[k].delete()
+
         # Save player
-        self.player.save()
+        await self.player.save()
 
         # Stop the game
         self.running = False

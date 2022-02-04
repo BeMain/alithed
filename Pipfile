@@ -8,8 +8,11 @@ pyglet = "*"
 glooey = "*"
 perlin-noise = "*"
 numpy = "*"
+pyfastnoisesimd = "*"
+aiofile = "*"
 
 [dev-packages]
+autopep8 = "*"
 
 [requires]
-python_version = "3.9"
+python_version = "3.10"
