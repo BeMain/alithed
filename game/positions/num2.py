@@ -4,6 +4,10 @@ import functools
 
 @functools.total_ordering
 class Num2(collections.namedtuple("Num2", "x y")):
+    @classmethod
+    def from_str(cls, s):
+        return cls(*eval(s))
+
     def __bool__(self):
         return self.x != 0 or self.y != 0
 
