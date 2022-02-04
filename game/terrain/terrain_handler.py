@@ -96,7 +96,7 @@ class Terrain(pyglet.event.EventDispatcher):
         tilepos = worldpos.to_tilepos()
 
         # Make sure tilepos is within bounds
-        tilepos.loop_around(Size2.chunk_tiles())
+        tilepos %= constants.CHUNK_N_TILES
 
         try:        # Just grab the correct chunk
             chunk = self.chunks[str(chunkpos)]

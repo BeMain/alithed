@@ -37,7 +37,7 @@ class Player(pyglet.sprite.Sprite):
 
     def to_data(self):
         return {
-            "worldpos": self.pos.to_coords()
+            "worldpos": [*self.pos]
         }
 
     async def save(self):
@@ -70,11 +70,11 @@ class Player(pyglet.sprite.Sprite):
         if dpos.x:
             # Move in x-direction
             self.pos += positions.Pos3.from_pos2(
-                *await self.calculate_move_xory(positions.Vector2(x=dpos.x), speed))
+                *await self.calculate_move_xory(positions.Vector2(dpos.x, 0), speed))
         if dpos.y:
             # Move in y-direction
             self.pos += positions.Pos3.from_pos2(
-                *await self.calculate_move_xory(positions.Vector2(y=dpos.y), speed))
+                *await self.calculate_move_xory(positions.Vector2(0, dpos.y), speed))
 
         # Trigger move event
         self.dispatch_event("on_move")
