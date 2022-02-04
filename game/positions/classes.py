@@ -1,11 +1,7 @@
 import collections
 import math
 
-
-Num2 = collections.namedtuple("Num2", "x y")
-Num3 = collections.namedtuple("Num3", Num2._fields + ("z",))
-
-Size2 = collections.namedtuple("Size2", "width, height")
+from .nums import Num2, Num3
 
 
 class Pos2(Num2):
@@ -62,3 +58,13 @@ class Vector2(Num2):
         newx = round(math.cos(v), precision)
         newy = round(math.sin(v), precision)
         return self._replace(x=newx, y=newy)
+
+
+class Size2(Num2):
+    @property
+    def width(self):
+        return self.x
+
+    @property
+    def height(self):
+        return self.y
