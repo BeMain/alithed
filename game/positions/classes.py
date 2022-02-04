@@ -1,7 +1,8 @@
 import collections
 import math
 
-from .nums import Num2, Num3
+from .num2 import Num2
+from .num3 import Num3
 
 
 class Pos2(Num2):
@@ -26,9 +27,6 @@ class Pos2(Num2):
         y = self.y - pos.y
         return -math.degrees(math.atan2(y, x))
 
-    def __mod__(self, pos):
-        return self._replace(x=self.x % pos.x, y=self.y % pos.y)
-
 
 class Pos3(Num3):
     @classmethod
@@ -47,9 +45,6 @@ class Pos3(Num3):
 
     def distancesq_to(self, pos):
         return (self.x - pos.x)**2 + (self.y - pos.y)**2 + (self.z - pos.z)**2
-
-    def __mod__(self, pos):
-        return self._replace(x=self.x % pos.x, y=self.y % pos.y)
 
 
 class Vector2(Num2):
