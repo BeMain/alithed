@@ -38,24 +38,24 @@ class Tile(pyglet.sprite.Sprite):
         newpos = screenpos + self.tilepos * constants.TILE_SIZE
 
         # Check bounds
-        if not newpos.is_on_screen(margin=(constants.TILE_SIZE // 2)):
+        if (z not in self.GROUPS) or (not newpos.is_on_screen(margin=(constants.TILE_SIZE // 2))):
             # Don't render if sprite is not on screen
             self.batch = None
+            return
 
+        if self.material == "air":
+            # Don't render air
+            self.batch = None
         else:
-            if self.material == "air":
-                # Don't render air
-                self.batch = None
-            else:
-                self.batch = self.BATCH
+            self.batch = self.BATCH
 
-            self.x = newpos.x
-            self.y = newpos.y
+        self.x = newpos.x
+        self.y = newpos.y
 
-            # Change appearance depending on what layer we are on
-            self.group = self.GROUPS[z]
-            self.color = style.layers[z]["color"]
-            self.opacity = style.layers[z]["opacity"]
+        # Change appearance depending on what layer we are on
+        self.group = self.GROUPS[z]
+        self.color = style.layers[z]["color"]
+        self.opacity = style.layers[z]["opacity"]
 
     def set_material(self, material):
         self.material = material

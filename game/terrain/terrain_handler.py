@@ -46,7 +46,7 @@ class Terrain(pyglet.event.EventDispatcher):
         new_keys = []
         for x in range(corners[0].x, corners[1].x + 1):
             for y in range(corners[0].y, corners[1].y + 1):
-                for z in range(pos.z - 1, pos.z + 2):
+                for z in range(pos.z - 2, pos.z + 2):
                     new_keys.append(str((x, y, z)))
 
         # Load new chunks
