@@ -1,22 +1,26 @@
-import pickle
 import json
 import os
+import pickle
 import shutil
+from aiofile import async_open
 
 from game import constants, debug
 from .terrain_generation import generate_chunk
 
 
-def read_player_data():
+async def read_player_data():
     path = constants.PLAYER_DATA_PATH
     if not os.path.exists(path):
         return
-    with open(path, "r") as readfile:
-        return json.load(readfile)
+    async with async_open(path, "r") as f:
+        data = await f.read()
+    return json.loads(data)
 
-def write_player_data(data):
-    with open(constants.PLAYER_DATA_PATH, "w") as writefile:
-        json.dump(data, writefile)
+
+async def write_player_data(data):
+    async with async_open(constants.PLAYER_DATA_PATH, "w") as f:
+        await f.write(json.dumps(data))
+
 
 def clear_player_data():
     debug.log("Clearing player data", priority=2)
@@ -24,31 +28,35 @@ def clear_player_data():
         os.remove(constants.PLAYER_DATA_PATH)
 
 
-def read_chunk(chunkpos):
+async def read_chunk(chunkpos):
     """Read chunk from disk"""
     path = f"{constants.CHUNKS_PATH}/{chunkpos.z}/{chunkpos.x}.{chunkpos.y}"
     if not os.path.exists(path):
         return
-    with open(path, "rb") as readfile:
-        return pickle.load(readfile)
+    async with async_open(path, "rb") as f:
+        data = await f.read()
+    return pickle.loads(data)
 
-def write_chunk(chunkpos, chunk):
+
+async def write_chunk(chunkpos, chunk):
     """Write chunk to disk"""
     # Make sure chunk directory exists
     if not os.path.exists(f"{constants.CHUNKS_PATH}/{chunkpos.z}/"):
         os.makedirs(f"{constants.CHUNKS_PATH}/{chunkpos.z}/")
-    
-    with open(f"{constants.CHUNKS_PATH}/{chunkpos.z}/{chunkpos.x}.{chunkpos.y}", "wb") as writefile:
-        pickle.dump(chunk, writefile)
+
+    data = pickle.dumps(chunk)
+    async with async_open(f"{constants.CHUNKS_PATH}/{chunkpos.z}/{chunkpos.x}.{chunkpos.y}", "wb") as f:
+        await f.write(data)
 
 
-def load_chunk(chunkpos):
+async def load_chunk(chunkpos):
     """Reads chunk from disk if it exists, otherwise generate a new one"""
-    chunk = read_chunk(chunkpos)
+    chunk = await read_chunk(chunkpos)
     if not chunk:
         chunk = generate_chunk(chunkpos)
-    
+
     return chunk
+
 
 def clear_chunks():
     """Remove all chunks from disk"""

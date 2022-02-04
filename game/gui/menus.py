@@ -14,10 +14,9 @@ class MainMenu(glooey.Widget, pyglet.event.EventDispatcher):
 
     class VBox(glooey.VBox):
         custom_alignment = "center"
-        
+
         custom_cell_alignment = "center"
         custom_cell_padding = 20
-
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -28,7 +27,7 @@ class MainMenu(glooey.Widget, pyglet.event.EventDispatcher):
         # Create widgets
         frame = self.Frame()
         vbox = self.VBox()
-        
+
         # Create buttons
         for action in self.actions:
             vbox.add(self._button(action))
@@ -37,7 +36,6 @@ class MainMenu(glooey.Widget, pyglet.event.EventDispatcher):
         frame.add(vbox)
         self._attach_child(frame)
 
-    
     def _button(self, action):
         button = self.Button(action)
 
@@ -87,20 +85,18 @@ class Settings(glooey.Widget, pyglet.event.EventDispatcher):
             hbox.add(edit_label)
 
             self._attach_child(hbox)
-    
 
     class VBox(glooey.VBox):
         custom_alignment = "center"
-        
-        custom_cell_alignment = "center"
-        custom_cell_padding = 20
-    
-    class HBox(glooey.HBox):
-        custom_alignment = "center"
-        
+
         custom_cell_alignment = "center"
         custom_cell_padding = 20
 
+    class HBox(glooey.HBox):
+        custom_alignment = "center"
+
+        custom_cell_alignment = "center"
+        custom_cell_padding = 20
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -118,17 +114,20 @@ class Settings(glooey.Widget, pyglet.event.EventDispatcher):
         btn_back = self.Button("Back")
         btn_done = self.Button("Done")
         # Push handlers
-        btn_back.push_handlers(on_click=lambda w: self.dispatch_event("on_button_click", "Back"))
-        btn_done.push_handlers(on_click=lambda w: self.dispatch_event("on_button_click", "Done"))
-        
+        btn_back.push_handlers(
+            on_click=lambda w: self.dispatch_event("on_button_click", "Back"))
+        btn_done.push_handlers(
+            on_click=lambda w: self.dispatch_event("on_button_click", "Done"))
+
         # Create editable labels
         for setting in self.settings:
             # Create label
             label = self.LabeledInput(setting)
-            label.push_handlers(on_changed=lambda s: self.dispatch_event("on_setting_changed", s))
+            label.push_handlers(
+                on_changed=lambda s: self.dispatch_event("on_setting_changed", s))
             # Add label
             vbox.add(label)
-        
+
         # Add buttons
         hbox.add_left(btn_back)
         hbox.add_right(btn_done)
