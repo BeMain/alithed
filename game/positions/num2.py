@@ -1,9 +1,13 @@
-import collections
+from dataclasses import dataclass
 import functools
 
 
+@dataclass
 @functools.total_ordering
-class Num2(collections.namedtuple("Num2", "x y")):
+class Num2():
+    x: float
+    y: float
+
     @classmethod
     def from_str(cls, s):
         return cls(*eval(s))
@@ -85,3 +89,6 @@ class Num2(collections.namedtuple("Num2", "x y")):
 
     def __str__(self):
         return f"({self.x}, {self.y})"
+
+    def __iter__(self):
+        return iter((self.x, self.y))

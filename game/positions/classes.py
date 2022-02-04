@@ -12,7 +12,7 @@ class Pos2(Num2):
 
     @classmethod
     def from_pos3(cls, pos3):
-        return cls(*pos3[0:2])
+        return cls(*[*pos3][0:2])
 
     def clamped(self, minpos, maxpos):
         newx = max(min(self.x, maxpos.x), minpos.x)
@@ -60,6 +60,14 @@ class Size2(Num2):
     def width(self):
         return self.x
 
+    @width.setter
+    def width(self, value):
+        self.x = value
+
     @property
     def height(self):
         return self.y
+
+    @height.setter
+    def height(self, value):
+        self.y = value
