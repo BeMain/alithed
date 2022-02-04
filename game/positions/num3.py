@@ -117,3 +117,6 @@ class Num3(collections.namedtuple("Num3", "x y z")):
 
     def __ceil__(self):
         return self.__class__(math.ceil(self.x), math.ceil(self.y), math.ceil(self.z))
+
+    def __str__(self):
+        return f"({self.x}, {self.y}, {self.z})"

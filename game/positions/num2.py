@@ -82,3 +82,6 @@ class Num2(collections.namedtuple("Num2", "x y")):
 
     def __ceil__(self):
         return self.__class__(math.ceil(self.x), math.ceil(self.y))
+
+    def __str__(self):
+        return f"({self.x}, {self.y})"
