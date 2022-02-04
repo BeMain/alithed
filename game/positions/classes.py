@@ -1,19 +1,26 @@
+import collections
 import math
 
-from game import constants
-from game.positions import num2, num3
+
+Num2 = collections.namedtuple("Num2", "x y")
+Num3 = collections.namedtuple("Num3", Num2._fields + ("z",))
+
+Size2 = collections.namedtuple("Size2", "width, height")
 
 
-class Pos2(num2.Num2):
-    def clamp(self, minpos, maxpos):
-        self.x = max(min(self.x, maxpos.x), minpos.x)
-        self.y = max(min(self.y, maxpos.y), minpos.y)
+class Pos2(Num2):
+    @classmethod
+    def from_pos2(cls, pos2):
+        return cls(*pos2)
 
-    def loop_around(self, maxpos):
-        if self.x >= maxpos.x:
-            self.x %= maxpos.x
-        if self.y >= maxpos.y:
-            self.y %= maxpos.y
+    @classmethod
+    def from_pos3(cls, pos3):
+        return cls(*pos3[0:2])
+
+    def clamped(self, minpos, maxpos):
+        newx = max(min(self.x, maxpos.x), minpos.x)
+        newy = max(min(self.y, maxpos.y), minpos.y)
+        return self._replace(x=newx, y=newy)
 
     def distancesq_to(self, pos):
         return (self.x - pos.x)**2 + (self.y - pos.y)**2
@@ -23,59 +30,35 @@ class Pos2(num2.Num2):
         y = self.y - pos.y
         return -math.degrees(math.atan2(y, x))
 
-    @classmethod
-    def from_pos2(cls, pos2):
-        return cls(*pos2.to_coords())
-
-    @classmethod
-    def from_pos3(cls, pos3):
-        return cls(*pos3.to_coords()[0:2])
+    def __mod__(self, pos):
+        return self._replace(x=self.x % pos.x, y=self.y % pos.y)
 
 
-class Pos3(num3.Num3):
-    def clamp(self, minpos, maxpos):
-        self.x = max(min(self.x, maxpos.x), minpos.x)
-        self.y = max(min(self.y, maxpos.y), minpos.y)
-        self.z = max(min(self.z, maxpos.z), minpos.z)
-
+class Pos3(Num3):
     @classmethod
     def from_pos2(cls, pos2, z):
-        return cls(*pos2.to_coords(), z)
+        return cls(*pos2, z=z)
 
     @classmethod
     def from_pos3(cls, pos3):
-        return cls(*pos3.to_coords())
+        return cls(*pos3)
+
+    def clamped(self, minpos, maxpos):
+        newx = max(min(self.x, maxpos.x), minpos.x)
+        newy = max(min(self.y, maxpos.y), minpos.y)
+        newz = max(min(self.z, maxpos.z), minpos.z)
+        return self._replace(x=newx, y=newy, z=newz)
+
+    def distancesq_to(self, pos):
+        return (self.x - pos.x)**2 + (self.y - pos.y)**2 + (self.z - pos.z)**2
+
+    def __mod__(self, pos):
+        return self._replace(x=self.x % pos.x, y=self.y % pos.y)
 
 
-class Size2(num2.Num2):
-    @property
-    def width(self):
-        return self.x
-
-    @property
-    def height(self):
-        return self.y
-
-    @classmethod
-    def tilesize(cls):
-        return cls(constants.TILE_SIZE, constants.TILE_SIZE)
-
-    @classmethod
-    def chunk_tiles(cls):
-        return cls(constants.CHUNK_SIZE, constants.CHUNK_SIZE)
-
-    @classmethod
-    def chunksize(cls):
-        size = constants.TILE_SIZE * constants.CHUNK_SIZE
-        return cls(size, size)
-
-    @classmethod
-    def screensize(cls):
-        return cls(constants.SCREEN_WIDTH, constants.SCREEN_HEIGHT)
-
-
-class Vector2(num2.Num2):
-    def normalize(self, precision=3):
+class Vector2(Num2):
+    def normalized(self, precision=3):
         v = math.atan2(self.y, self.x)
-        self.x = round(math.cos(v), precision)
-        self.y = round(math.sin(v), precision)
+        newx = round(math.cos(v), precision)
+        newy = round(math.sin(v), precision)
+        return self._replace(x=newx, y=newy)
