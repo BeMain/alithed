@@ -2,6 +2,7 @@ import numpy as np
 
 from game import debug
 from game.positions import *
+from game.terrain import tile
 
 # === BENCHMARKS BEFORE ===
 # Creating Screenpos: 8.58306884765625e-06
@@ -15,15 +16,16 @@ from game.positions import *
 @debug.timeit
 def test1():
     screenpos = Screenpos(1, 2)
-    playerpos = Worldpos(0, 0)
+    playerpos = Worldpos(0, 0, 0)
     worldpos = screenpos.to_worldpos(playerpos)
     tilepos = worldpos.to_tilepos()
 
 
 @debug.timeit
 def test2():
-    posa = Pos3(1, 2)
+    posa = Pos3(1, 2, 3)
     posb = Pos3.from_pos3(posa)
 
 
-test()
+test1()
+test2()
