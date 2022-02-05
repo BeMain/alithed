@@ -12,6 +12,12 @@ from game.terrain import tile
 # Creating Pos3: 8.106231689453125e-06
 # + Creating Pos3 from Pos3 (test2): 1.1205673217773438e-05
 
+# === BENCHMARKS AFTER ===
+# Creating Screenpos: 6.9141387939453125e-06
+# Creating Screenpos + Worldpos: 9.298324584960938e-06
+# + converting Screenpos -> Worldpos: 2.3603439331054688e-05
+# + converting Worldpos -> tilepos (test1): 3.647804260253906e-05
+
 
 @debug.timeit
 def test1():
@@ -28,4 +34,3 @@ def test2():
 
 
 test1()
-test2()
