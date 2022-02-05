@@ -87,7 +87,11 @@ class GameWindow(pyglet.window.Window):
 
         worldpos = pos.to_worldpos(self.player.pos)
 
-        tile = terrain.get_tile(worldpos)
+        task = asyncio.create_task(terrain.get_tile(worldpos))
+        task.add_done_callback(self._set_tile_material)
+
+    def _set_tile_material(self, task):
+        tile = task.result()
         if tile.material == "air":
             tile.set_material("stone")
         else:
