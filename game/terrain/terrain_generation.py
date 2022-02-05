@@ -2,7 +2,7 @@ import numpy as np
 import pyfastnoisesimd as fns
 
 from game import constants, debug
-from game.positions import Pos3, Size2
+from game.positions import Pos3
 
 
 threshold = 0.55
@@ -17,16 +17,15 @@ def generate_chunk(chunkpos):
     global freq
 
     # Generate noise
-    size = Size2.chunk_tiles() * freq
-    startpos = chunkpos * freq * Size2.chunk_tiles()
+    size = constants.CHUNK_N_TILES * freq
+    startpos = chunkpos * freq * constants.CHUNK_N_TILES
 
-    pixels = noise.genAsGrid(shape=size.to_coords(),
-                             start=startpos.to_coords()) + 0.5
+    pixels = noise.genAsGrid(shape=[*size], start=[*startpos]) + 0.5
 
     # Turn 2d array of int -> 1d array of dict
     tiles = []
-    for x in range(constants.CHUNK_SIZE):
-        for y in range(constants.CHUNK_SIZE):
+    for x in range(constants.CHUNK_N_TILES.width):
+        for y in range(constants.CHUNK_N_TILES.height):
             tiles.append(_tile(pixels[x * freq.x, y * freq.y]))
 
     return np.array(tiles)

@@ -1,41 +1,46 @@
-import math
+from dataclasses import dataclass
+import functools
 
 
-class Num3(object):
-    def __init__(self, x=0, y=0, z=0):
-        super(Num3, self).__init__()
-
-        self.x = x
-        self.y = y
-        self.z = z
-
-    def to_coords(self):
-        return self.x, self.y, self.z
+@dataclass
+@functools.total_ordering
+class Num3():
+    x: float
+    y: float
+    z: float
 
     @classmethod
     def from_str(cls, s):
         return cls(*eval(s))
-
-    def to_dict(self):
-        return {"x": self.x, "y": self.y, "z": self.z}
-
-    @classmethod
-    def from_dict(cls, dct):
-        return cls(**dct)
 
     def __bool__(self):
         return self.x != 0 or self.y != 0 or self.z != 0
 
     def __eq__(self, other):
         try:
-            return self.x == other.x and self.y == other.y and self.z == other.z
+            return (self.x == other.x) and (self.y == other.y) and (self.z == other.z)
         except:
             pass
         try:
-            return self.x == other.x and self.y == other.y and self.z == 0
+            return (self.x == other.x) and (self.y == other.y) and (self.z == 0)
         except:
             pass
-        return self.x == other and self.y == other and self.z == other
+        return (self.x == other) and (self.y == other) and (self.z == other)
+
+    def __lt__(self, other):
+        try:
+            return (self.x < other.x) and (self.y < other.y) and (self.z < other.z)
+        except:
+            return (self.x < other) and (self.y < other) and (self.z < other)
+
+    def __gt__(self, other):
+        try:
+            return (self.x > other.x) and (self.y > other.y) and (self.z > other.z)
+        except:
+            return (self.x > other) and (self.y > other) and (self.z > other)
+
+    def __neg__(self):
+        return self.__class__(-self.x, -self.y, -self.z)
 
     def __add__(self, other):
         try:
@@ -120,3 +125,6 @@ class Num3(object):
 
     def __str__(self):
         return f"({self.x}, {self.y}, {self.z})"
+
+    def __iter__(self):
+        return iter((self.x, self.y, self.z))

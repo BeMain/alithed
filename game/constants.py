@@ -1,11 +1,15 @@
+from game.positions.classes import Size2
+
 # TODO: Make these selectable within a main menu
-SCREEN_WIDTH = 800
-SCREEN_HEIGHT = 600
+
+SCREEN_SIZE = Size2(800, 600)
 
 FPS = 60
 
-TILE_SIZE = 60.0
-CHUNK_SIZE = 16
+
+TILE_SIZE = Size2(60, 60)
+CHUNK_N_TILES = Size2(16, 16)
+CHUNK_SIZE = TILE_SIZE * CHUNK_N_TILES
 
 SEED = 1111
 

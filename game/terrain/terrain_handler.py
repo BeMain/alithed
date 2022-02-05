@@ -1,8 +1,8 @@
 import asyncio
 import pyglet
 
-from game import debug
-from game.positions import Chunkpos, Pos2, Size2
+from game import debug, constants
+from game.positions import Chunkpos, Pos2
 from .chunk import Chunk
 
 # TODO: Implement zooming in and out
@@ -36,8 +36,7 @@ class Terrain(pyglet.event.EventDispatcher):
         # Get chunk positions for lower left and upper right corner
         corners = []
         for rel_cords in [(-2, -2), (2, 2)]:
-            worldpos = pos + \
-                Pos2.from_list(rel_cords) * Size2.screensize() // 2
+            worldpos = pos + Pos2(*rel_cords) * constants.SCREEN_SIZE // 2
             chunkpos = worldpos.to_chunkpos()
             corners.append(chunkpos)
 
@@ -65,8 +64,7 @@ class Terrain(pyglet.event.EventDispatcher):
         # Get chunk positions for lower left and upper right corner
         corners = []
         for rel_cords in [(-1, -1), (1, 1)]:
-            worldpos = pos + \
-                Pos2.from_list(rel_cords) * Size2.screensize() // 2
+            worldpos = pos + Pos2(*rel_cords) * constants.SCREEN_SIZE // 2
             chunkpos = worldpos.to_chunkpos()
             corners.append(chunkpos)
 
@@ -98,7 +96,7 @@ class Terrain(pyglet.event.EventDispatcher):
         tilepos = worldpos.to_tilepos()
 
         # Make sure tilepos is within bounds
-        tilepos.loop_around(Size2.chunk_tiles())
+        tilepos %= constants.CHUNK_N_TILES
 
         try:        # Just grab the correct chunk
             chunk = self.chunks[str(chunkpos)]
