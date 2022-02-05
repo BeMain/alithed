@@ -1,4 +1,3 @@
-import collections
 import math
 
 from .num2 import Num2
